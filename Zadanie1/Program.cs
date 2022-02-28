@@ -7,7 +7,7 @@ namespace Zadanie1
         private static void Main(string[] args)
         {
             Func<double, double> exprLinear = x => 3 * x + 2.5;
-            double zeroLinear = FindZeroArgBisect(exprLinear, 2.0, 5.0, 0.000001);
+            double zeroLinear = FindZeroArgBisect(exprLinear, -2.0, 5.0, 0.000001);
             Console.WriteLine($"Function y = 3x + 2.5 has a zero with x = {zeroLinear}, (y({zeroLinear}) = {exprLinear(zeroLinear):n7})");
 
             Console.ReadKey();
@@ -20,9 +20,9 @@ namespace Zadanie1
             double upperBound = max;
             double lowerBound = min;
             double potentialZero = (upperBound + lowerBound) * 0.5;
-            double result;
+            double result = expr(potentialZero);
 
-            do
+            while (Math.Abs(result) > eps)
             {
                 result = expr(potentialZero);
 
@@ -37,7 +37,6 @@ namespace Zadanie1
                 
                 potentialZero = (upperBound + lowerBound) * 0.5;
             }
-            while (Math.Abs(result) > eps);
 
             return potentialZero;
         }
