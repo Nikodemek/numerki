@@ -12,31 +12,36 @@ namespace Zadanie1
 {
     class Program
     {
-        private static void Main(string[] args)
+        private static void Main()
         {
             Func<double, double> exprLinear = x => x*x - 2;
             Func<double, double> deriLinear = x => 2 * x;
+            string exprLinearString = "x^2 - 2";
+            double epsilon = 0.000001;
+            int iterations = 7;
 
-            double zeroLinear = FindZeroArgBisect(exprLinear, -1.0, 5.0, 0.000001);
-            Console.WriteLine($"Function y = 3x + 2.5 has a zero with x = {zeroLinear}, (y({zeroLinear}) = {exprLinear(zeroLinear):n7})");
-            zeroLinear = FindZeroArgIncisal(exprLinear, deriLinear, -1.0, 5.0, 0.01);
-            Console.WriteLine($"Function y = 3x + 2.5 has a zero with x = {zeroLinear}, (y({zeroLinear}) = {exprLinear(zeroLinear):n7})");
+            double zeroLinear;
 
-            zeroLinear = FindZeroArgBisect(exprLinear, -1.0, 5.0, 9);
-            Console.WriteLine($"Function y = 3x + 2.5 has a zero with x = {zeroLinear}, (y({zeroLinear}) = {exprLinear(zeroLinear):n7})");
-            zeroLinear = FindZeroArgIncisal(exprLinear, deriLinear, -1.0, 5.0, 1);
-            Console.WriteLine($"Function y = 3x + 2.5 has a zero with x = {zeroLinear}, (y({zeroLinear}) = {exprLinear(zeroLinear):n7})");
+            zeroLinear = FindZeroArgBisection(exprLinear, -1.0, 5.0, epsilon);
+            LogResult(exprLinear, exprLinearString, zeroLinear, epsilon, "Bisection");
+            zeroLinear = FindZeroArgNewtons(exprLinear, deriLinear, -1.0, 5.0, epsilon);
+            LogResult(exprLinear, exprLinearString, zeroLinear, epsilon, "Newton's");
+
+            zeroLinear = FindZeroArgBisection(exprLinear, -1.0, 5.0, iterations);
+            LogResult(exprLinear, exprLinearString, zeroLinear, iterations, "Bisection");
+            zeroLinear = FindZeroArgNewtons(exprLinear, deriLinear, -1.0, 5.0, iterations);
+            LogResult(exprLinear, exprLinearString, zeroLinear, iterations, "Newton's");
 
             Console.ReadKey();
         }
 
-        // -------------------- Bisect --------------------
+        #region Bisection method
 
-        private static double FindZeroArgBisect(Func<double, double> expr, double min, double max, double eps)
+        private static double FindZeroArgBisection(Func<double, double> expr, double min, double max, double eps)
         {
-            if (expr(min) * expr(max) > 0) throw new ArgumentException("Zły argument");
+            if (expr(min) * expr(max) > 0 || eps <= 0.0) throw new ArgumentException("Złe argumenty");
 
-            double prevPotentialZero = max;
+            double prevPotentialZero = min;
             double upperBound = max;
             double lowerBound = min;
             double potentialZero = (upperBound + lowerBound) * 0.5;
@@ -45,14 +50,8 @@ namespace Zadanie1
             {
                 double result = expr(potentialZero);
 
-                if (result < 0)
-                {
-                    lowerBound = potentialZero;
-                }
-                else
-                {
-                    upperBound = potentialZero;
-                }
+                if (result < 0) lowerBound = potentialZero;
+                else upperBound = potentialZero;
 
                 prevPotentialZero = potentialZero;
                 potentialZero = (upperBound + lowerBound) * 0.5;
@@ -61,10 +60,9 @@ namespace Zadanie1
             return potentialZero;
         }
 
-        private static double FindZeroArgBisect(Func<double, double> expr, double min, double max, int iterations)
+        private static double FindZeroArgBisection(Func<double, double> expr, double min, double max, int iterations)
         {
-            if (expr(min) * expr(max) > 0 
-                || iterations == 0) throw new ArgumentException("Zły argument");
+            if (expr(min) * expr(max) > 0 || iterations <= 0) throw new ArgumentException("Zły argument");
 
             double upperBound = max;
             double lowerBound = min;
@@ -74,14 +72,8 @@ namespace Zadanie1
             {
                 double result = expr(potentialZero);
 
-                if (result < 0)
-                {
-                    lowerBound = potentialZero;
-                }
-                else
-                {
-                    upperBound = potentialZero;
-                }
+                if (result < 0) lowerBound = potentialZero;
+                else upperBound = potentialZero;
 
                 potentialZero = (upperBound + lowerBound) * 0.5;
             }
@@ -89,11 +81,13 @@ namespace Zadanie1
             return potentialZero;
         }
 
-        // -------------------- Incisal --------------------
+        #endregion
 
-        private static double FindZeroArgIncisal(Func<double, double> expr, Func<double, double> deri, double min, double max, double eps)
+        #region Newton's method
+
+        private static double FindZeroArgNewtons(Func<double, double> expr, Func<double, double> deri, double min, double max, double eps)
         {
-            if (expr(min) * expr(max) > 0) throw new ArgumentException("Zły argument");
+            if (expr(min) * expr(max) > 0 || eps <= 0.0) throw new ArgumentException("Złe argumenty");
 
             double x = min;
             double potentialZero = x - expr(x) / deri(x);
@@ -107,10 +101,9 @@ namespace Zadanie1
             return potentialZero;
         }
 
-        private static double FindZeroArgIncisal(Func<double, double> expr, Func<double, double> deri, double min, double max, int iterations)
+        private static double FindZeroArgNewtons(Func<double, double> expr, Func<double, double> deri, double min, double max, int iterations)
         {
-            if (expr(min) * expr(max) > 0 
-                || iterations == 0) throw new ArgumentException("Zły argument");
+            if (expr(min) * expr(max) > 0 || iterations <= 0) throw new ArgumentException("Złe argumenty");
 
             double x = min;
             double potentialZero = x - expr(x) / deri(x);
@@ -124,5 +117,20 @@ namespace Zadanie1
             return potentialZero;
         }
 
+        #endregion
+
+        #region Utils
+
+        private static void LogResult(Func<double, double> expression, string function, double root, double epsilon, string method)
+        {
+            Console.WriteLine($"Function f(x) = {function} is zero when x = {root}\n(calculated using {method} method, with a precision of {epsilon}).\nf({root}) = {expression(root):n20}\n");
+        }
+
+        private static void LogResult(Func<double, double> expression, string function, double root, int iterations, string method)
+        {
+            Console.WriteLine($"Function f(x) = {function} is zero when x = {root}\n(calculated using {method} method, using {iterations} iterations).\n(f({root}) = {expression(root):n20})\n");
+        }
+
+        #endregion
     }
 }
