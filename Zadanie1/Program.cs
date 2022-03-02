@@ -41,7 +41,7 @@ namespace Zadanie1
         {
             if (expr(min) * expr(max) > 0 || eps <= 0.0) throw new ArgumentException("Złe argumenty");
 
-            double prevPotentialZero = min;
+            double prevPotentialZero = max;
             double upperBound = max;
             double lowerBound = min;
             double potentialZero = (upperBound + lowerBound) * 0.5;
@@ -89,7 +89,7 @@ namespace Zadanie1
         {
             if (expr(min) * expr(max) > 0 || eps <= 0.0) throw new ArgumentException("Złe argumenty");
 
-            double x = min;
+            double x = max;
             double potentialZero = x - expr(x) / deriv(x);
 
             while (Math.Abs(potentialZero - x) > eps)
@@ -105,7 +105,7 @@ namespace Zadanie1
         {
             if (expr(min) * expr(max) > 0 || iterations <= 0) throw new ArgumentException("Złe argumenty");
 
-            double x = min;
+            double x = max;
             double potentialZero = x - expr(x) / deriv(x);
 
             for (var i = 0; i < iterations - 1; i++)
