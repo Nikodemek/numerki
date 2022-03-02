@@ -85,33 +85,33 @@ namespace Zadanie1
 
         #region Newton's method
 
-        private static double FindZeroArgNewtons(Func<double, double> expr, Func<double, double> deri, double min, double max, double eps)
+        private static double FindZeroArgNewtons(Func<double, double> expr, Func<double, double> deriv, double min, double max, double eps)
         {
             if (expr(min) * expr(max) > 0 || eps <= 0.0) throw new ArgumentException("Złe argumenty");
 
             double x = min;
-            double potentialZero = x - expr(x) / deri(x);
+            double potentialZero = x - expr(x) / deriv(x);
 
             while (Math.Abs(potentialZero - x) > eps)
             {
                 x = potentialZero;
-                potentialZero = x - expr(x) / deri(x);
+                potentialZero = x - expr(x) / deriv(x);
             }
 
             return potentialZero;
         }
 
-        private static double FindZeroArgNewtons(Func<double, double> expr, Func<double, double> deri, double min, double max, int iterations)
+        private static double FindZeroArgNewtons(Func<double, double> expr, Func<double, double> deriv, double min, double max, int iterations)
         {
             if (expr(min) * expr(max) > 0 || iterations <= 0) throw new ArgumentException("Złe argumenty");
 
             double x = min;
-            double potentialZero = x - expr(x) / deri(x);
+            double potentialZero = x - expr(x) / deriv(x);
 
             for (var i = 0; i < iterations - 1; i++)
             {
                 x = potentialZero;
-                potentialZero = x - expr(x) / deri(x);
+                potentialZero = x - expr(x) / deriv(x);
             }
 
             return potentialZero;
