@@ -118,9 +118,6 @@ namespace Zadanie1
                 zeroLinear = FindZeroArgNewtons(exprLinear, deriLinear, a, b, iterations);
                 LogResult(exprLinear, exprLinearString, zeroLinear, iterations, "Newton's");
             }
-
-
-
         }
 
         private static int IntInputWithValidation()
@@ -256,7 +253,7 @@ namespace Zadanie1
 
         private static void LogResult(Func<double, double> expression, string function, double root, int iterations, string method)
         {
-            Console.WriteLine($"Function f(x) = {function} is zero when x = {root}\n(calculated using {method} method, using {iterations} iterations).\n(f({root}) = {expression(root):n20})\n");
+            Console.WriteLine($"Function f(x) = {function} is zero when x = {root}\n(calculated using {method} method, using {iterations} iterations).\nf({root}) = {expression(root):n20}\n");
         }
 
         #endregion
