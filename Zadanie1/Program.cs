@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
+using System.Globalization;
 
 /*                           ''        
     '||''|, .|''|, `||''|,   ||  ('''' 
@@ -11,249 +11,298 @@ using System.Runtime.CompilerServices;
 
 namespace Zadanie1
 {
-    class Program
+    static class Program
     {
         private static void Main()
         {
-            Func<double, double> exprLinear = x => x*x*x - 2*x - 5;
-            Func<double, double> deriLinear = x => 3 * x * x - 2;
-            string exprLinearString = "x^2 - 2";
-            double epsilon = 0.000001;
-            int iterations = 7;
-
-            double zeroLinear;
-
-            zeroLinear = FindZeroArgBisection(exprLinear, -1.0, 5.0, epsilon);
-            LogResult(exprLinear, exprLinearString, zeroLinear, epsilon, "Bisection");
-            zeroLinear = FindZeroArgNewtons(exprLinear, deriLinear, -1.0, 5.0, epsilon);
-            LogResult(exprLinear, exprLinearString, zeroLinear, epsilon, "Newton's");
-
-            zeroLinear = FindZeroArgBisection(exprLinear, -1.0, 5.0, iterations);
-            LogResult(exprLinear, exprLinearString, zeroLinear, iterations, "Bisection");
-            zeroLinear = FindZeroArgNewtons(exprLinear, deriLinear, -1.0, 5.0, iterations);
-            LogResult(exprLinear, exprLinearString, zeroLinear, iterations, "Newton's");
-
+            //QuickCheck();
             MiniMenu();
 
             Console.ReadKey();
         }
 
+        private static void QuickCheck()
+        {
+            Func<double, double> expr = x => x * x * x - 2 * x - 5;
+            Func<double, double> deriv = x => 3 * x * x - 2;
+            string exprString = "x^2 - 2";
+            double epsilon = 0.000001;
+            int iterations = 7;
+
+            expr = x => Math.Pow(2, Math.Sin(x)) - 1;
+            deriv = x => Math.Pow(2, Math.Sin(x)) * Math.Cos(x) * Math.Log(2);
+            exprString = "2^sin(x) - 1";
+
+            int min = -2;
+            int max = 1;
+
+            double root;
+            root = FindRootBisection(expr, min, max, epsilon);
+            LogResult(expr, exprString, root, epsilon, "Bisection");
+            root = FindRootNewtons(expr, deriv, min, max, epsilon);
+            LogResult(expr, exprString, root, epsilon, "Newton's");
+
+            root = FindRootBisection(expr, min, max, iterations);
+            LogResult(expr, exprString, root, iterations, "Bisection");
+            root = FindRootNewtons(expr, deriv, min, max, iterations);
+            LogResult(expr, exprString, root, iterations, "Newton's");
+        }
+
         private static void MiniMenu()
         {
-            Func<double, double> exprLinear = null, deriLinear = null;
-            int a, b;
-            double epsilon;
-            int iterations;
-            string exprLinearString = null;
-            double zeroLinear;
+            Func<double, double> expr = null, deriv = null;
+            string exprString = null;
+            double rangeMin, rangeMax;
+            double root;
             int choice;
 
-            Console.WriteLine("Which nonlinear function do you want to calculate the zero point?");
-            Console.WriteLine("1. f(x) = x^2 - 2");
-            Console.WriteLine("2. f(x) = x^3 - 2x - 5");
-            Console.WriteLine("3. tan(x - 3)");
-            Console.WriteLine("4. 2^x - 3");
-            Console.WriteLine("5. tan(2^x - 3)");
-            Console.WriteLine("6. sin(x^2 - 2)");
-            Console.WriteLine("7. 2^sin(x) - 1");
+            Console.WriteLine("For which function do you want to calculate the root?");
+            Console.WriteLine("1. f(x) = 2x - 3");
+            Console.WriteLine("2. f(x) = x^2 - 2");
+            Console.WriteLine("3. f(x) = x^3 - 2x - 5");
+            Console.WriteLine("4. f(x) = tan(x - 3)");
+            Console.WriteLine("5. f(x) = sin(x^2 - 2)");
+            Console.WriteLine("6. f(x) = 2^sin(x) - 1");
+            Console.Write("Input: ");
+            choice = ReadInt32(1, 6);
+            Console.WriteLine();
 
-            bool uncorrect = true;
-
-            while (uncorrect)
+            switch (choice)
             {
-                choice = IntInputWithValidation();
-                switch (choice)
-                {
-                    case 1:
-                        exprLinear = x => x * x - 2;
-                        deriLinear = x => 2 * x;
-                        exprLinearString = "x^2 - 2";
-                        uncorrect = false;
-                        break;
-                    case 2:
-                        exprLinear = x => x * x * x - 2 * x - 5;
-                        deriLinear = x => 3 * x * x - 2;
-                        exprLinearString = "x^3 - 2x - 5";
-                        uncorrect = false;
-                        break;
-                    case 3:
-                        exprLinear = x => Math.Tan(x - 2);
-                        deriLinear = x => 1 / (Math.Cos(x - 3)) * (Math.Cos(x - 3));
-                        exprLinearString = "tan(x - 3)";
-                        uncorrect = false;
-                        break;
-                    default:
-                        continue;
-                }
+                case 1:
+                    expr = x => 2 * x - 3;
+                    deriv = x => 2;
+                    exprString = "2x - 3";
+                    break;
+                case 2:
+                    expr = x => x * x - 2;
+                    deriv = x => 2 * x;
+                    exprString = "x^2 - 2";
+                    break;
+                case 3:
+                    expr = x => x * x * x - 2 * x - 5;
+                    deriv = x => 3 * x * x - 2;
+                    exprString = "x^3 - 2x - 5";
+                    break;
+                case 4:
+                    expr = x => Math.Tan(x - 3);
+                    deriv = x => {
+                        double cos = Math.Cos(x - 3);
+                        return 1 / (cos * cos);
+                    };
+                    exprString = "tan(x - 3)";
+                    break;
+                case 5:
+                    expr = x => Math.Sin(x * x - 2);
+                    deriv = x => 2 * x * Math.Cos(x * x - 2);
+                    exprString = "sin(x^2 - 2)";
+                    break;
+                case 6:
+                    expr = x => Math.Pow(2, Math.Sin(x)) - 1;
+                    deriv = x => Math.Pow(2, Math.Sin(x)) * Math.Cos(x) * Math.Log(2);
+                    exprString = "2^sin(x) - 1";
+                    break;
+                default:
+                    throw new ArgumentException("That should not have happened.");
             }
 
+            Console.WriteLine("Enter a range [min, max]:");
+            Console.Write("min: ");
+            rangeMin = ReadDouble();
+            Console.Write("max: ");
+            rangeMax = ReadDouble(rangeMin);
+            Console.WriteLine();
 
-            Console.WriteLine("Enter a range [a, b]:");
-            Console.Write("a: ");
-            a = IntInputWithValidation();
-            Console.Write("b: ");
-            b = IntInputWithValidation();
+            Console.WriteLine("Specify the stop condition.");
+            Console.WriteLine("1. Epsilon");
+            Console.WriteLine("2. Iterations");
+            Console.Write("Input: ");
+            choice = ReadInt32(1, 2);
+            Console.WriteLine();
 
-            Console.WriteLine("Specify the stop criterion.");
-            Console.WriteLine("1. Accuracy");
-            Console.WriteLine("2. Number of iterations");
-
-            choice = IntInputWithValidation();
-
-            if (choice == 1)
+            switch (choice)
             {
-                Console.Write("Enter accuracy: ");
-                epsilon = DoubleInputWithValidation();
-                zeroLinear = FindZeroArgBisection(exprLinear, a, b, epsilon);
-                LogResult(exprLinear, exprLinearString, zeroLinear, epsilon, "Bisection");
-                zeroLinear = FindZeroArgNewtons(exprLinear, deriLinear, a, b, epsilon);
-                LogResult(exprLinear, exprLinearString, zeroLinear, epsilon, "Newton's");
-            }
-            else
-            {
-                Console.Write("Enter number of iterations: ");
-                iterations = IntInputWithValidation();
-                zeroLinear = FindZeroArgBisection(exprLinear, a, b, iterations);
-                LogResult(exprLinear, exprLinearString, zeroLinear, iterations, "Bisection");
-                zeroLinear = FindZeroArgNewtons(exprLinear, deriLinear, a, b, iterations);
-                LogResult(exprLinear, exprLinearString, zeroLinear, iterations, "Newton's");
-            }
-        }
+                case 1:
+                    Console.Write("Enter accuracy: ");
+                    double epsilon = ReadDouble(0);
+                    Console.WriteLine();
 
-        private static int IntInputWithValidation()
-        {
-            bool uncorrect = true;
-            int output = 0;
-            string input;
-            while (uncorrect)
-            {
-                input = Console.ReadLine();
-                if (!int.TryParse(input, out output))
-                {
-                    Console.WriteLine("Wrong input! Try again.");
-                }
-                else
-                {
-                    uncorrect = false;
-                }
-            }
-            return output;
-        }
+                    root = FindRootBisection(expr, rangeMin, rangeMax, epsilon);
+                    LogResult(expr, exprString, root, epsilon, "Bisection");
+                    root = FindRootNewtons(expr, deriv, rangeMin, rangeMax, epsilon);
+                    LogResult(expr, exprString, root, epsilon, "Newton's");
 
-        private static double DoubleInputWithValidation()
-        {
-            bool uncorrect = true;
-            double output = 0;
-            string input;
-            while (uncorrect)
-            {
-                input = Console.ReadLine();
-                if (!double.TryParse(input, out output))
-                {
-                    Console.WriteLine("Wrong input! Try again.");
-                }
-                else
-                {
-                    uncorrect = false;
-                }
+                    break;
+                case 2:
+                    Console.Write("Enter number of iterations: ");
+                    int iterations = ReadInt32(1);
+                    Console.WriteLine();
+
+                    root = FindRootBisection(expr, rangeMin, rangeMax, iterations);
+                    LogResult(expr, exprString, root, iterations, "Bisection");
+                    root = FindRootNewtons(expr, deriv, rangeMin, rangeMax, iterations);
+                    LogResult(expr, exprString, root, iterations, "Newton's");
+
+                    break;
+                default:
+                    throw new ArgumentException("That should not have happened.");
             }
-            return output;
         }
 
         #region Bisection method
 
-        private static double FindZeroArgBisection(Func<double, double> expr, double min, double max, double eps)
+        private static double FindRootBisection(Func<double, double> expr, double min, double max, double eps)
         {
-            if (expr(min) * expr(max) > 0 || eps <= 0.0) throw new ArgumentException("Złe argumenty");
+            double valueOfMin = expr(min);
+            double valueOfMax = expr(max);
+            bool isIncreasing = valueOfMin < valueOfMax;
 
-            double prevPotentialZero = max;
-            double upperBound = max;
-            double lowerBound = min;
-            double potentialZero = (upperBound + lowerBound) * 0.5;
+            if (valueOfMin * valueOfMax > 0 || eps <= 0.0) throw new ArgumentException("Złe argumenty");
 
-            while (Math.Abs(prevPotentialZero - potentialZero) > eps)
+            double upperBound = isIncreasing ? max : min;
+            double lowerBound = isIncreasing ? min : max;
+
+            double prevPotRoot = lowerBound;
+            double potRoot = (upperBound + lowerBound) * 0.5;
+
+            while (Math.Abs(prevPotRoot - potRoot) > eps)
             {
-                double result = expr(potentialZero);
+                double result = expr(potRoot);
 
-                if (result < 0) lowerBound = potentialZero;
-                else upperBound = potentialZero;
+                if (result < 0) lowerBound = potRoot;
+                else upperBound = potRoot;
 
-                prevPotentialZero = potentialZero;
-                potentialZero = (upperBound + lowerBound) * 0.5;
+                prevPotRoot = potRoot;
+                potRoot = (upperBound + lowerBound) * 0.5;
             }
 
-            return potentialZero;
+            return potRoot;
         }
 
-        private static double FindZeroArgBisection(Func<double, double> expr, double min, double max, int iterations)
+        private static double FindRootBisection(Func<double, double> expr, double min, double max, int iterations)
         {
-            if (expr(min) * expr(max) > 0 || iterations <= 0) throw new ArgumentException("Zły argument");
+            double valueOfMin = expr(min);
+            double valueOfMax = expr(max);
+            bool isIncreasing = valueOfMin < valueOfMax;
 
-            double upperBound = max;
-            double lowerBound = min;
-            double potentialZero = (upperBound + lowerBound) * 0.5;
+            if (valueOfMin * valueOfMax > 0 || iterations <= 0) throw new ArgumentException("Złe argumenty");
+
+            double upperBound = isIncreasing ? max : min;
+            double lowerBound = isIncreasing ? min : max;
+
+            double potRoot = (upperBound + lowerBound) * 0.5;
 
             for (var i = 0; i < iterations - 1; i++)
             {
-                double result = expr(potentialZero);
+                double result = expr(potRoot);
 
-                if (result < 0) lowerBound = potentialZero;
-                else upperBound = potentialZero;
+                if (result < 0) lowerBound = potRoot;
+                else upperBound = potRoot;
 
-                potentialZero = (upperBound + lowerBound) * 0.5;
+                potRoot = (upperBound + lowerBound) * 0.5;
             }
 
-            return potentialZero;
+            return potRoot;
         }
 
         #endregion
 
         #region Newton's method
 
-        private static double FindZeroArgNewtons(Func<double, double> expr, Func<double, double> deriv, double min, double max, double eps)
+        private static double FindRootNewtons(Func<double, double> expr, Func<double, double> deriv, double min, double max, double eps)
         {
-            if (expr(min) * expr(max) > 0 || eps <= 0.0) throw new ArgumentException("Złe argumenty");
+            double valueOfMin = expr(min);
+            double valueOfMax = expr(max);
+            bool isIncreasing = valueOfMin < valueOfMax;
 
-            double x = min;
-            double potentialZero = x - expr(x) / deriv(x);
+            if (valueOfMin * valueOfMax > 0 || eps <= 0.0) throw new ArgumentException("Złe argumenty");
 
-            while (Math.Abs(potentialZero - x) > eps)
+            double prevPotRoot = isIncreasing ? max : min;
+            double potRoot = prevPotRoot - expr(prevPotRoot) / deriv(prevPotRoot);
+
+            while (Math.Abs(potRoot - prevPotRoot) > eps)
             {
-                x = potentialZero;
-                potentialZero = x - expr(x) / deriv(x);
+                prevPotRoot = potRoot;
+                potRoot = prevPotRoot - expr(prevPotRoot) / deriv(prevPotRoot);
             }
 
-            return potentialZero;
+            return potRoot;
         }
 
-        private static double FindZeroArgNewtons(Func<double, double> expr, Func<double, double> deriv, double min, double max, int iterations)
+        private static double FindRootNewtons(Func<double, double> expr, Func<double, double> deriv, double min, double max, int iterations)
         {
-            if (expr(min) * expr(max) > 0 || iterations <= 0) throw new ArgumentException("Złe argumenty");
+            double valueOfMin = expr(min);
+            double valueOfMax = expr(max);
+            bool isIncreasing = valueOfMin < valueOfMax;
 
-            double x = max;
-            double potentialZero = x - expr(x) / deriv(x);
+            if (valueOfMin * valueOfMax > 0 || iterations <= 0) throw new ArgumentException("Złe argumenty");
+
+            double prevPotRoot = isIncreasing ? max : min;
+            double potRoot = prevPotRoot - expr(prevPotRoot) / deriv(prevPotRoot);
 
             for (var i = 0; i < iterations - 1; i++)
             {
-                x = potentialZero;
-                potentialZero = x - expr(x) / deriv(x);
+                prevPotRoot = potRoot;
+                potRoot = prevPotRoot - expr(prevPotRoot) / deriv(prevPotRoot);
             }
 
-            return potentialZero;
+            return potRoot;
         }
 
         #endregion
 
         #region Utils
 
+        private static int ReadInt32(int min = Int32.MinValue, int max = Int32.MaxValue)
+        {
+            while (true)
+            {
+                string input = Console.ReadLine();
+                if (Int32.TryParse(input, NumberStyles.Number, NumberFormatInfo.InvariantInfo, out int output) && output.Between(min, max))
+                {
+                    return output;
+                }
+                else
+                {
+                    Console.WriteLine($"Wrong input! It is supposed to be an Int32, ranging from {min} to {max}.");
+                }
+            }
+        }
+
+        private static double ReadDouble(double min = Double.MinValue, double max = Double.MaxValue)
+        {
+            while (true)
+            {
+                string input = Console.ReadLine();
+                if (Double.TryParse(input, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out double output) && output.Between(min, max))
+                {
+                    return output;
+                }
+                else
+                {
+                    Console.WriteLine($"Wrong input! It is supposed to be a Double, ranging from {min} to {max}.");
+                }
+            }
+        }
+
         private static void LogResult(Func<double, double> expression, string function, double root, double epsilon, string method)
         {
-            Console.WriteLine($"Function f(x) = {function} is zero when x = {root}\n(calculated using {method} method, with a precision of {epsilon}).\nf({root}) = {expression(root):n20}\n");
+            Console.WriteLine($"Function f(x) = {function} is zero when x = {root:n20}\n(calculated using {method} method, with a precision of {epsilon}).\nf({root:n20}) = {expression(root):n20}\n");
         }
 
         private static void LogResult(Func<double, double> expression, string function, double root, int iterations, string method)
         {
-            Console.WriteLine($"Function f(x) = {function} is zero when x = {root}\n(calculated using {method} method, using {iterations} iterations).\nf({root}) = {expression(root):n20}\n");
+            Console.WriteLine($"Function f(x) = {function} is zero when x = {root:n20}\n(calculated using {method} method, after {iterations} iterations).\nf({root:n20}) = {expression(root):n20}\n");
+        }
+
+        public static bool Between(this double val, double min, double max)
+        {
+            return val >= min && val <= max;
+        }
+
+        public static bool Between(this int val, int min, int max)
+        {
+            return val >= min && val <= max;
         }
 
         #endregion
