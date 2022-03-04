@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
+using System.Numerics;
+using System.Text;
 
 /*                           ''        
     '||''|, .|''|, `||''|,   ||  ('''' 
@@ -15,8 +19,42 @@ namespace Zadanie1
     {
         private static void Main()
         {
+            string dirPath = "../../../assets";
+
+            try
+            {
+                if (!Directory.Exists(dirPath))
+                {
+                    Directory.CreateDirectory(dirPath);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            
             //QuickCheck();
             MiniMenu();
+
+            string gnuplotPath = @"C:\Program Files\gnuplot\bin\gnuplot.exe";
+            try
+            {
+                using (Process GNUPlot = new Process())
+                {
+                    GNUPlot.StartInfo.FileName = gnuplotPath;
+                    GNUPlot.StartInfo.UseShellExecute = false;
+                    GNUPlot.StartInfo.RedirectStandardInput = true;
+                    GNUPlot.Start();
+
+                    StreamWriter gnupStWr = GNUPlot.StandardInput;
+                    gnupStWr.WriteLine("plot '../../../assets/data.dat' w l");
+                    gnupStWr.Flush();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
 
             Console.ReadKey();
         }
@@ -112,6 +150,8 @@ namespace Zadanie1
             Console.Write("max: ");
             rangeMax = ReadDouble(rangeMin);
             Console.WriteLine();
+            
+            FuncDataToFile(expr, rangeMin, rangeMax);
 
             Console.WriteLine("Specify the stop condition.");
             Console.WriteLine("1. Epsilon");
@@ -295,14 +335,40 @@ namespace Zadanie1
             Console.WriteLine($"Function f(x) = {function} is zero when x = {root:n20}\n(calculated using {method} method, after {iterations} iterations).\nf({root:n20}) = {expression(root):n20}\n");
         }
 
-        public static bool Between(this double val, double min, double max)
+        private static bool Between(this double val, double min, double max)
         {
             return val >= min && val <= max;
         }
 
-        public static bool Between(this int val, int min, int max)
+        private static bool Between(this int val, int min, int max)
         {
             return val >= min && val <= max;
+        }
+
+        private static void FuncDataToFile(Func<double, double> expression, double min, double max)
+        {
+            double x = min;
+            double y;
+            double step = 0.1d;
+            
+            string fullPath = "../../../assets/data.dat";
+            StringBuilder stringBuilder = new StringBuilder();
+            
+            using (StreamWriter writer = new StreamWriter(fullPath))
+            {
+                while (x < max)
+                {
+                    stringBuilder.Clear();
+                    
+                    y = expression(x);
+                    stringBuilder.Append(x);
+                    stringBuilder.Append("\t");
+                    stringBuilder.Append(y);
+
+                    writer.WriteLine(stringBuilder.ToString().Replace(",", "."));
+                    x += step;
+                }
+            }  
         }
 
         #endregion
