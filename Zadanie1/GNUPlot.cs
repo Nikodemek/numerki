@@ -7,53 +7,42 @@ namespace Zadanie1
 {
     public class GNUPlot
     {
-        public static void FuncDataToFile(Func<double, double> expression, double min, double max)
-        {
-            double x = min;
-            double y;
-            double step = 0.1d;
-            
-            string fullPath = "../../../assets/data.dat";
-            StringBuilder stringBuilder = new StringBuilder();
-            
-            using (StreamWriter writer = new StreamWriter(fullPath))
-            {
-                while (x < max)
-                {
-                    stringBuilder.Clear();
-                    
-                    y = expression(x);
-                    stringBuilder.Append(x);
-                    stringBuilder.Append("\t");
-                    stringBuilder.Append(y);
+        private static readonly string dataPath = @"..\..\..\assets\data.dat";
+        private static readonly string gnuplotPath = @"C:\Program Files\gnuplot\bin\gnuplot.exe";
 
-                    writer.WriteLine(stringBuilder.ToString().Replace(",", "."));
-                    x += step;
-                }
-            }  
+        public static void FuncDataToFile(Func<double, double> expression, double min, double max, double step = 0.1d)
+        {
+            var stringBuilder = new StringBuilder();
+            using var writer = new StreamWriter(dataPath);
+
+            for (double x = min; x < max; x += step)
+            {
+                double y = expression(x);
+                stringBuilder.Append(x);
+                stringBuilder.Append('\t');
+                stringBuilder.Append(y);
+                stringBuilder.AppendLine();
+            }
+
+            string correctData = stringBuilder.ToString().Replace(",", ".");
+            writer.WriteLine(correctData);
         }
 
-        public static void Initialize()
+        public static IDisposable Run()
         {
-            string gnuplotPath = @"C:\Program Files\gnuplot\bin\gnuplot.exe";
-            try
-            {
-                using (Process GNUPlot = new Process())
-                {
-                    GNUPlot.StartInfo.FileName = gnuplotPath;
-                    GNUPlot.StartInfo.UseShellExecute = false;
-                    GNUPlot.StartInfo.RedirectStandardInput = true;
-                    GNUPlot.Start();
+            using var gnuplotProcess = new Process();
+            ProcessStartInfo startInfo = gnuplotProcess.StartInfo;
 
-                    StreamWriter gnupStWr = GNUPlot.StandardInput;
-                    gnupStWr.WriteLine("plot '../../../assets/data.dat' w l");
-                    gnupStWr.Flush();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            startInfo.FileName = gnuplotPath;
+            startInfo.UseShellExecute = false;
+            startInfo.RedirectStandardInput = true;
+
+            gnuplotProcess.Start();
+
+            StreamWriter gnupStWr = gnuplotProcess.StandardInput;
+            gnupStWr.WriteLine($"plot '{dataPath}' w l");
+             
+            return gnupStWr;
         }
     }
 }

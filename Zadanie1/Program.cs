@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Numerics;
-using System.Text;
 
 /*                           ''        
     '||''|, .|''|, `||''|,   ||  ('''' 
@@ -23,8 +20,7 @@ namespace Zadanie1
 
             //QuickCheck();
             MiniMenu();
-            
-            GNUPlot.Initialize();
+            using var process = GNUPlot.Run();
 
             Console.ReadKey();
         }
