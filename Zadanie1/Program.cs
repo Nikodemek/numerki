@@ -4,7 +4,7 @@ namespace Zadanie1;
 
 public class Program
 {
-    private static GNUPlot _gnuplot = new GNUPlot();
+    private static GNUPlot _gnuplot = new();
     
     private static void Main()
     {
