@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
+using System.Numerics;
+using System.Text;
 
 /*                           ''        
     '||''|, .|''|, `||''|,   ||  ('''' 
@@ -15,8 +19,12 @@ namespace Zadanie1
     {
         private static void Main()
         {
+            CheckIfDirectoryExists("../../../assets");
+
             //QuickCheck();
             MiniMenu();
+            
+            GNUPlot.Initialize();
 
             Console.ReadKey();
         }
@@ -112,6 +120,8 @@ namespace Zadanie1
             Console.Write("max: ");
             rangeMax = ReadDouble(rangeMin);
             Console.WriteLine();
+            
+            GNUPlot.FuncDataToFile(expr, rangeMin, rangeMax);
 
             Console.WriteLine("Specify the stop condition.");
             Console.WriteLine("1. Epsilon");
@@ -295,14 +305,29 @@ namespace Zadanie1
             Console.WriteLine($"Function f(x) = {function} is zero when x = {root:n20}\n(calculated using {method} method, after {iterations} iterations).\nf({root:n20}) = {expression(root):n20}\n");
         }
 
-        public static bool Between(this double val, double min, double max)
+        private static bool Between(this double val, double min, double max)
         {
             return val >= min && val <= max;
         }
 
-        public static bool Between(this int val, int min, int max)
+        private static bool Between(this int val, int min, int max)
         {
             return val >= min && val <= max;
+        }
+
+        private static void CheckIfDirectoryExists(string dirPath)
+        {
+            try
+            {
+                if (!Directory.Exists(dirPath))
+                {
+                    Directory.CreateDirectory(dirPath);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         #endregion
