@@ -1,56 +1,18 @@
 ﻿using System;
 
-/*                           ''        
-    '||''|, .|''|, `||''|,   ||  ('''' 
-     ||  || ||..||  ||  ||   ||   `'') 
-     ||..|' `|...  .||  ||. .||. `...' 
-     ||                                
-    .|| 
-*/
-
 namespace Zadanie1;
 
 public class Program
 {
-    private static GNUPlot _gnuplot;
+    private static GNUPlot _gnuplot = new GNUPlot();
     
     private static void Main()
     {
-        _gnuplot = new GNUPlot();
-            
-        //QuickCheck();
         MiniMenu();
         _gnuplot.Start();
-
+        
         Console.ReadKey();
         _gnuplot.Stop();
-    }
-
-    private static void QuickCheck()
-    {
-        Func<double, double> expr;
-        Func<double, double> deriv;
-        string exprString;
-        double epsilon = 0.000001;
-        int iterations = 7;
-
-        expr = x => Math.Pow(2, Math.Sin(x)) - 1;
-        deriv = x => Math.Pow(2, Math.Sin(x)) * Math.Cos(x) * Math.Log(2);
-        exprString = "2^sin(x) - 1";
-
-        int min = -2;
-        int max = 1;
-
-        double root;
-        root = FindRootBisection(expr, min, max, epsilon);
-        Util.LogResult(expr, exprString, root, epsilon, "Bisection");
-        root = FindRootNewtons(expr, deriv, min, max, epsilon);
-        Util.LogResult(expr, exprString, root, epsilon, "Newton's");
-
-        root = FindRootBisection(expr, min, max, iterations);
-        Util.LogResult(expr, exprString, root, iterations, "Bisection");
-        root = FindRootNewtons(expr, deriv, min, max, iterations);
-        Util.LogResult(expr, exprString, root, iterations, "Newton's");
     }
 
     private static void MiniMenu()

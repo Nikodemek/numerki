@@ -70,7 +70,9 @@ public class GNUPlot
         _gnupProcess.Start();
 
         _gnupSw = _gnupProcess.StandardInput;
-        _gnupSw.WriteLine($"plot '{FunctionDataFilePath}' w l, '{PointDataFilePath}' w p");
+        _gnupSw.WriteLine($"plot '{FunctionDataFilePath}' title \"f(x)\" w l, " +
+            $"'{PointDataFilePath}' every ::0::1 title \"Bisection\" w p, " +
+            $"'{PointDataFilePath}' every ::1::2 title \"Newtons\" w p");
     }
 
     public void Stop()
