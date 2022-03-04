@@ -58,7 +58,7 @@ public class Program
         Func<double, double> expr, deriv;
         string exprString;
         double rangeMin, rangeMax;
-        double root;
+        double bisectionRoot, newtonsRoot;
         int choice;
 
         Console.WriteLine("For which function do you want to calculate the root?");
@@ -134,10 +134,10 @@ public class Program
                 double epsilon = Util.ReadDouble(0);
                 Console.WriteLine();
 
-                root = FindRootBisection(expr, rangeMin, rangeMax, epsilon);
-                Util.LogResult(expr, exprString, root, epsilon, "Bisection");
-                root = FindRootNewtons(expr, deriv, rangeMin, rangeMax, epsilon);
-                Util.LogResult(expr, exprString, root, epsilon, "Newton's");
+                bisectionRoot = FindRootBisection(expr, rangeMin, rangeMax, epsilon);
+                Util.LogResult(expr, exprString, bisectionRoot, epsilon, "Bisection");
+                newtonsRoot = FindRootNewtons(expr, deriv, rangeMin, rangeMax, epsilon);
+                Util.LogResult(expr, exprString, newtonsRoot, epsilon, "Newton's");
 
                 break;
             case 2:
@@ -145,15 +145,17 @@ public class Program
                 int iterations = Util.ReadInt32(1);
                 Console.WriteLine();
 
-                root = FindRootBisection(expr, rangeMin, rangeMax, iterations);
-                Util.LogResult(expr, exprString, root, iterations, "Bisection");
-                root = FindRootNewtons(expr, deriv, rangeMin, rangeMax, iterations);
-                Util.LogResult(expr, exprString, root, iterations, "Newton's");
+                bisectionRoot = FindRootBisection(expr, rangeMin, rangeMax, iterations);
+                Util.LogResult(expr, exprString, bisectionRoot, iterations, "Bisection");
+                newtonsRoot = FindRootNewtons(expr, deriv, rangeMin, rangeMax, iterations);
+                Util.LogResult(expr, exprString, newtonsRoot, iterations, "Newton's");
 
                 break;
             default:
                 throw new ArgumentException("That should not have happened.");
         }
+        
+        _gnuplot.PointDataToFile(expr, bisectionRoot, newtonsRoot);
     }
 
     #region Bisection method
