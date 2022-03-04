@@ -4,18 +4,17 @@ namespace Zadanie1;
 
 public class Program
 {
-    private static GNUPlot _gnuplot = new();
-    
     private static void Main()
     {
-        MiniMenu();
-        _gnuplot.Start();
+        using var gnuplot = new GNUPlot();
+
+        MiniMenu(gnuplot);
+        gnuplot.Start();
         
         Console.ReadKey();
-        _gnuplot.Stop();
     }
 
-    private static void MiniMenu()
+    private static void MiniMenu(GNUPlot gnuplot)
     {
         Func<double, double> expr, deriv;
         string exprString;
@@ -79,8 +78,8 @@ public class Program
         Console.Write("max: ");
         rangeMax = Util.ReadDouble(rangeMin);
         Console.WriteLine();
-            
-        _gnuplot.FuncDataToFile(expr, rangeMin, rangeMax);
+
+        gnuplot.FuncDataToFile(expr, rangeMin, rangeMax);
 
         Console.WriteLine("Specify the stop condition.");
         Console.WriteLine("1. Epsilon");
@@ -116,8 +115,8 @@ public class Program
             default:
                 throw new ArgumentException("That should not have happened.");
         }
-        
-        _gnuplot.PointDataToFile(expr, bisectionRoot, newtonsRoot);
+
+        gnuplot.PointDataToFile(expr, bisectionRoot, newtonsRoot);
     }
 
     #region Bisection method

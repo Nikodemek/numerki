@@ -1,6 +1,6 @@
 assets/
 
-# Rider
+# JetBrains Rider
 .idea/
 
 ## Ignore Visual Studio temporary files, build results, and
@@ -353,6 +353,3 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
-
-# IDEA Rider
-.idea/

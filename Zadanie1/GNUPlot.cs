@@ -5,22 +5,32 @@ using System.Text;
 
 namespace Zadanie1;
 
-public class GNUPlot
+public class GNUPlot : IDisposable
 {
-    private static readonly string DataDirPath = @"..\..\..\assets";
-    private static readonly string FunctionDataFilePath = Path.Combine(DataDirPath, "function_data.dat");
-    private static readonly string PointDataFilePath = Path.Combine(DataDirPath, "point_data.dat");
-    private static readonly string GnuplotPath = @"C:\Program Files\gnuplot\bin\gnuplot.exe";
+    private static readonly string GnuplotPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "gnuplot", "bin", "gnuplot.exe");
+    private static readonly string BaseDataDirPath = Path.Combine(Path.GetTempPath(), "metody_numeryczne_2022");
 
-    private StreamWriter _gnupSw;
-    private Process _gnupProcess;
+    private static uint instances = 0;
+
+    private readonly string DataDirPath;
+    private readonly string FunctionDataFilePath;
+    private readonly string PointDataFilePath;
+
+    private StreamWriter _gpSw;
+    private Process _gpProc;
 
     public GNUPlot()
     {
-        Util.EnsureDirectoryExists(DataDirPath);
+        DataDirPath = Path.Combine(BaseDataDirPath, $"assets-({instances})");
+        FunctionDataFilePath = Path.Combine(DataDirPath, "function_data.dat");
+        PointDataFilePath = Path.Combine(DataDirPath, "points_data.dat");
+
+        Util.CreateDirectory(DataDirPath);
+
+        instances++;
     }
 
-    public void FuncDataToFile(Func<double, double> expression, double min, double max, double step = 0.1d)
+    public void FuncDataToFile(Func<double, double> expression, double min, double max, double step = 0.1)
     {
         var stringBuilder = new StringBuilder();
         using var writer = new StreamWriter(FunctionDataFilePath);
@@ -42,7 +52,7 @@ public class GNUPlot
     {
         var stringBuilder = new StringBuilder();
         using var writer = new StreamWriter(PointDataFilePath);
-
+        
         foreach (var x in xes)
         {
             double y = expression(x);
@@ -53,38 +63,49 @@ public class GNUPlot
         }
 
         string correctData = stringBuilder.ToString().Replace(",", ".");
-        writer.WriteLine(correctData);
+        writer.Write(correctData);
     }
 
     public void Start()
     {
-        if (_gnupProcess is not null || _gnupSw is not null) Stop();
+        if (_gpProc is not null || _gpSw is not null) Stop();
             
-        _gnupProcess = new Process();
-        var startInfo = _gnupProcess.StartInfo;
+        _gpProc = new Process();
+        var startInfo = _gpProc.StartInfo;
 
         startInfo.FileName = GnuplotPath;
         startInfo.UseShellExecute = false;
         startInfo.RedirectStandardInput = true;
 
-        _gnupProcess.Start();
+        _gpProc.Start();
 
-        _gnupSw = _gnupProcess.StandardInput;
-        _gnupSw.WriteLine($"plot '{FunctionDataFilePath}' title \"f(x)\" w l, " +
+        _gpSw = _gpProc.StandardInput;
+        _gpSw.WriteLine($"plot '{FunctionDataFilePath}' title \"f(x)\" w l, " +
             $"'{PointDataFilePath}' every ::0::1 title \"Bisection\" w p, " +
             $"'{PointDataFilePath}' every ::1::2 title \"Newtons\" w p");
     }
 
     public void Stop()
     {
-        if (_gnupProcess is null || _gnupSw is null) return;
-            
-        _gnupSw.Close();
-        _gnupSw.Dispose();
-        _gnupSw = null;
-            
-        _gnupProcess.Close();
-        _gnupProcess.Dispose();
-        _gnupProcess = null;
+        if (_gpSw is not null)
+        {
+            _gpSw.Close();
+            _gpSw.Dispose();
+            _gpSw = null;
+        }        
+        if (_gpProc is not null)
+        {
+            _gpProc.Close();
+            _gpProc.Dispose();
+            _gpProc = null;
+        }
+    }
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+
+        Stop();
+        Util.DeleteDirectory(DataDirPath);
     }
 }
