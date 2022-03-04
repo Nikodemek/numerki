@@ -19,42 +19,12 @@ namespace Zadanie1
     {
         private static void Main()
         {
-            string dirPath = "../../../assets";
+            CheckIfDirectoryExists("../../../assets");
 
-            try
-            {
-                if (!Directory.Exists(dirPath))
-                {
-                    Directory.CreateDirectory(dirPath);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-            
             //QuickCheck();
             MiniMenu();
-
-            string gnuplotPath = @"C:\Program Files\gnuplot\bin\gnuplot.exe";
-            try
-            {
-                using (Process GNUPlot = new Process())
-                {
-                    GNUPlot.StartInfo.FileName = gnuplotPath;
-                    GNUPlot.StartInfo.UseShellExecute = false;
-                    GNUPlot.StartInfo.RedirectStandardInput = true;
-                    GNUPlot.Start();
-
-                    StreamWriter gnupStWr = GNUPlot.StandardInput;
-                    gnupStWr.WriteLine("plot '../../../assets/data.dat' w l");
-                    gnupStWr.Flush();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            
+            GNUPlot.Initialize();
 
             Console.ReadKey();
         }
@@ -151,7 +121,7 @@ namespace Zadanie1
             rangeMax = ReadDouble(rangeMin);
             Console.WriteLine();
             
-            FuncDataToFile(expr, rangeMin, rangeMax);
+            GNUPlot.FuncDataToFile(expr, rangeMin, rangeMax);
 
             Console.WriteLine("Specify the stop condition.");
             Console.WriteLine("1. Epsilon");
@@ -345,30 +315,19 @@ namespace Zadanie1
             return val >= min && val <= max;
         }
 
-        private static void FuncDataToFile(Func<double, double> expression, double min, double max)
+        private static void CheckIfDirectoryExists(string dirPath)
         {
-            double x = min;
-            double y;
-            double step = 0.1d;
-            
-            string fullPath = "../../../assets/data.dat";
-            StringBuilder stringBuilder = new StringBuilder();
-            
-            using (StreamWriter writer = new StreamWriter(fullPath))
+            try
             {
-                while (x < max)
+                if (!Directory.Exists(dirPath))
                 {
-                    stringBuilder.Clear();
-                    
-                    y = expression(x);
-                    stringBuilder.Append(x);
-                    stringBuilder.Append("\t");
-                    stringBuilder.Append(y);
-
-                    writer.WriteLine(stringBuilder.ToString().Replace(",", "."));
-                    x += step;
+                    Directory.CreateDirectory(dirPath);
                 }
-            }  
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         #endregion
