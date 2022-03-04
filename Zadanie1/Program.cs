@@ -23,8 +23,8 @@ namespace Zadanie1
 
         private static void QuickCheck()
         {
-            Func<double, double> expr = x => x * x * x - 2 * x - 5;
-            Func<double, double> deriv = x => 3 * x * x - 2;
+            Func<double, double> expr;
+            Func<double, double> deriv;
             string exprString = "x^2 - 2";
             double epsilon = 0.000001;
             int iterations = 7;
@@ -50,8 +50,8 @@ namespace Zadanie1
 
         private static void MiniMenu()
         {
-            Func<double, double> expr = null, deriv = null;
-            string exprString = null;
+            Func<double, double> expr, deriv;
+            string exprString;
             double rangeMin, rangeMax;
             double root;
             int choice;
