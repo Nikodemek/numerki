@@ -65,7 +65,7 @@ public static class Util
         Console.WriteLine($"Function f(x) = {function} is zero when x = {root:n20}\n" +
             $"(calculated using {method} method, after {iterations} iterations).\n" +
             $"f({root:n20}) = {expression(root):n20}\n" +
-            $"Achieved epsilon = {achievedEpsilon}\n");
+            $"Achieved accuracy = {achievedEpsilon}\n");
     }
 
     public static bool Between(this double val, double min, double max)

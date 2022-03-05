@@ -111,7 +111,7 @@ public class Program
         switch (choice)
         {
             case 1:
-                Console.Write($"Enter accuracy (default = {DefEps}): ");
+                Console.Write($"Enter epsilon (default = {DefEps}): ");
                 double epsilon = Util.ReadDouble(min: 0, def: DefEps);
                 Console.WriteLine();
 
