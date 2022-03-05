@@ -30,7 +30,7 @@ public class GNUPlot : IDisposable
         instances++;
     }
 
-    public void FuncDataToFile(Func<double, double> expression, double min, double max, double step = 0.1)
+    public void FuncDataToFile(Func<double, double> expression, double min, double max, double step = 0.01)
     {
         var stringBuilder = new StringBuilder();
         using var writer = new StreamWriter(FunctionDataFilePath);

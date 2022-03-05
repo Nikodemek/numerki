@@ -209,11 +209,10 @@ public class Program
     {
         double valueOfMin = expr(min);
         double valueOfMax = expr(max);
-        bool isIncreasing = valueOfMin < valueOfMax;
 
         if (valueOfMin * valueOfMax > 0 || eps <= 0.0) throw new ArgumentException("Złe argumenty");
 
-        double prevPotRoot = isIncreasing ? max : min;
+        double prevPotRoot = (max + min) * 0.5;
         double potRoot = prevPotRoot - expr(prevPotRoot) / deriv(prevPotRoot);
 
         iterations = 1;
@@ -232,11 +231,10 @@ public class Program
     {
         double valueOfMin = expr(min);
         double valueOfMax = expr(max);
-        bool isIncreasing = valueOfMin < valueOfMax;
 
         if (valueOfMin * valueOfMax > 0 || iters <= 0) throw new ArgumentException("Złe argumenty");
 
-        double prevPotRoot = isIncreasing ? max : min;
+        double prevPotRoot = (max + min) * 0.5;
         double potRoot = prevPotRoot - expr(prevPotRoot) / deriv(prevPotRoot);
 
         for (var i = 1; i < iters; i++)
