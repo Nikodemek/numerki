@@ -16,9 +16,17 @@ public class Program
 
     private static void MiniMenu(GNUPlot gnuplot)
     {
+        var rand = new Random();
+
+        int DefFunc = rand.Next(1, 7);
+        int DefStopCond = rand.Next(1, 3);
+        int DefIters = rand.Next(1, 500);
+        double DefEps = Math.Pow(0.1, rand.Next(1, 10));
+
         Func<double, double> expr, deriv;
         string exprString;
         double rangeMin, rangeMax;
+        double defMin, defMax;
         double bisectionRoot, newtonsRoot;
         int choice;
 
@@ -29,8 +37,8 @@ public class Program
         Console.WriteLine("4. f(x) = tan(x - 3)");
         Console.WriteLine("5. f(x) = sin(x^2 - 2)");
         Console.WriteLine("6. f(x) = 2^sin(x) - 1");
-        Console.Write("Input: ");
-        choice = Util.ReadInt32(1, 6);
+        Console.Write($"Input (default = {DefFunc}): ");
+        choice = Util.ReadInt32(min: 1, max: 6, def: DefFunc);
         Console.WriteLine();
 
         switch (choice)
@@ -39,16 +47,22 @@ public class Program
                 expr = x => 2 * x - 3;
                 deriv = _ => 2;
                 exprString = "2x - 3";
+                defMin = -2.0;
+                defMax = 5.0;
                 break;
             case 2:
                 expr = x => x * x - 2;
                 deriv = x => 2 * x;
                 exprString = "x^2 - 2";
+                defMin = -1.0;
+                defMax = 4.0;
                 break;
             case 3:
                 expr = x => x * x * x - 2 * x - 5;
                 deriv = x => 3 * x * x - 2;
                 exprString = "x^3 - 2x - 5";
+                defMin = -10.0;
+                defMax = 9.0;
                 break;
             case 4:
                 expr = x => Math.Tan(x - 3);
@@ -57,26 +71,32 @@ public class Program
                     return 1 / (cos * cos);
                 };
                 exprString = "tan(x - 3)";
+                defMin = 1.0;
+                defMax = 4.0;
                 break;
             case 5:
                 expr = x => Math.Sin(x * x - 2);
                 deriv = x => 2 * x * Math.Cos(x * x - 2);
                 exprString = "sin(x^2 - 2)";
+                defMin = -2.0;
+                defMax = 1.0;
                 break;
             case 6:
                 expr = x => Math.Pow(2, Math.Sin(x)) - 1;
                 deriv = x => Math.Pow(2, Math.Sin(x)) * Math.Cos(x) * Math.Log(2);
                 exprString = "2^sin(x) - 1";
+                defMin = 0.1;
+                defMax = 3.2;
                 break;
             default:
                 throw new ArgumentException("That should not have happened.");
         }
 
-        Console.WriteLine("Enter a range [min, max]:");
-        Console.Write("min: ");
-        rangeMin = Util.ReadDouble();
-        Console.Write("max: ");
-        rangeMax = Util.ReadDouble(rangeMin);
+        Console.WriteLine($"Enter a range [min, max]:");
+        Console.Write($"min (default = {defMin}): ");
+        rangeMin = Util.ReadDouble(def: defMin);
+        Console.Write($"max (default = {defMax}): ");
+        rangeMax = Util.ReadDouble(min: rangeMin, def: defMax);
         Console.WriteLine();
 
         gnuplot.FuncDataToFile(expr, rangeMin, rangeMax);
@@ -84,15 +104,15 @@ public class Program
         Console.WriteLine("Specify the stop condition.");
         Console.WriteLine("1. Epsilon");
         Console.WriteLine("2. Iterations");
-        Console.Write("Input: ");
-        choice = Util.ReadInt32(1, 2);
+        Console.Write($"Input (default = {DefStopCond}): ");
+        choice = Util.ReadInt32(min: 1, max: 2, def: DefStopCond);
         Console.WriteLine();
 
         switch (choice)
         {
             case 1:
-                Console.Write("Enter accuracy: ");
-                double epsilon = Util.ReadDouble(0);
+                Console.Write($"Enter accuracy (default = {DefEps}): ");
+                double epsilon = Util.ReadDouble(min: 0, def: DefEps);
                 Console.WriteLine();
 
                 bisectionRoot = FindRootBisection(expr, rangeMin, rangeMax, epsilon, out int bisectionIterations);
@@ -102,8 +122,8 @@ public class Program
 
                 break;
             case 2:
-                Console.Write("Enter number of iterations: ");
-                int iterations = Util.ReadInt32(1);
+                Console.Write($"Enter number of iterations (default = {DefIters}): ");
+                int iterations = Util.ReadInt32(min: 1, def: DefIters);
                 Console.WriteLine();
 
                 bisectionRoot = FindRootBisection(expr, rangeMin, rangeMax, iterations, out double bisectionEpsilon);
@@ -135,7 +155,7 @@ public class Program
         double prevPotRoot = lowerBound;
         double potRoot = (upperBound + lowerBound) * 0.5;
 
-        iterations = 0;
+        iterations = 1;
         while (Math.Abs(prevPotRoot - potRoot) > eps)
         {
             double result = expr(potRoot);
@@ -196,7 +216,7 @@ public class Program
         double prevPotRoot = isIncreasing ? max : min;
         double potRoot = prevPotRoot - expr(prevPotRoot) / deriv(prevPotRoot);
 
-        iterations = 0;
+        iterations = 1;
         while (Math.Abs(potRoot - prevPotRoot) > eps)
         {
             prevPotRoot = potRoot;

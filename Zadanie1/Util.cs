@@ -6,28 +6,46 @@ namespace Zadanie1;
 
 public static class Util
 {
-    public static int ReadInt32(int min = Int32.MinValue, int max = Int32.MaxValue)
+    public static int ReadInt32(int min = Int32.MinValue, int max = Int32.MaxValue, int def = 0)
     {
         while (true)
         {
             string input = Console.ReadLine();
-            if (Int32.TryParse(input, NumberStyles.Number, NumberFormatInfo.InvariantInfo, out int output) && output.Between(min, max))
+
+            if (input is not null)
             {
-                return output;
+                if (String.Equals(input, String.Empty, StringComparison.OrdinalIgnoreCase))
+                {
+                    return def;
+                }
+
+                if (Int32.TryParse(input, NumberStyles.Number, NumberFormatInfo.InvariantInfo, out int output) && output.Between(min, max))
+                {
+                    return output;
+                }
             }
 
             Console.WriteLine($"Wrong input! It is supposed to be an Int32, ranging from {min} to {max}.");
         }
     }
 
-    public static double ReadDouble(double min = Double.MinValue, double max = Double.MaxValue)
+    public static double ReadDouble(double min = Double.MinValue, double max = Double.MaxValue, double def = 0.0)
     {
         while (true)
         {
             string input = Console.ReadLine();
-            if (Double.TryParse(input, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out double output) && output.Between(min, max))
+
+            if (input is not null)
             {
-                return output;
+                if (String.Equals(input, String.Empty, StringComparison.OrdinalIgnoreCase))
+                {
+                    return def;
+                }
+
+                if (Double.TryParse(input, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out double output) && output.Between(min, max))
+                {
+                    return output;
+                }
             }
 
             Console.WriteLine($"Wrong input! It is supposed to be a Double, ranging from {min} to {max}.");
@@ -36,12 +54,18 @@ public static class Util
 
     public static void LogResult(Func<double, double> expression, string function, double root, double epsilon, string method, int neededIterations)
     {
-        Console.WriteLine($"Function f(x) = {function} is zero when x = {root:n20}\n(calculated using {method} method, with a precision of {epsilon}).\nf({root:n20}) = {expression(root):n20}\nNeeded iterations = {neededIterations}\n");
+        Console.WriteLine($"Function f(x) = {function} is zero when x = {root:n20}\n" +
+            $"(calculated using {method} method, with a precision of {epsilon}).\n" +
+            $"f({root:n20}) = {expression(root):n20}\n" +
+            $"Needed iterations = {neededIterations}\n");
     }
 
     public static void LogResult(Func<double, double> expression, string function, double root, int iterations, string method, double achievedEpsilon)
     {
-        Console.WriteLine($"Function f(x) = {function} is zero when x = {root:n20}\n(calculated using {method} method, after {iterations} iterations).\nf({root:n20}) = {expression(root):n20}\nAchieved epsilon = {achievedEpsilon}\n");
+        Console.WriteLine($"Function f(x) = {function} is zero when x = {root:n20}\n" +
+            $"(calculated using {method} method, after {iterations} iterations).\n" +
+            $"f({root:n20}) = {expression(root):n20}\n" +
+            $"Achieved epsilon = {achievedEpsilon}\n");
     }
 
     public static bool Between(this double val, double min, double max)
