@@ -95,10 +95,10 @@ public class Program
                 double epsilon = Util.ReadDouble(0);
                 Console.WriteLine();
 
-                bisectionRoot = FindRootBisection(expr, rangeMin, rangeMax, epsilon);
-                Util.LogResult(expr, exprString, bisectionRoot, epsilon, "Bisection");
-                newtonsRoot = FindRootNewtons(expr, deriv, rangeMin, rangeMax, epsilon);
-                Util.LogResult(expr, exprString, newtonsRoot, epsilon, "Newton's");
+                bisectionRoot = FindRootBisection(expr, rangeMin, rangeMax, epsilon, out int bisectionIterations);
+                Util.LogResult(expr, exprString, bisectionRoot, epsilon, "Bisection", bisectionIterations);
+                newtonsRoot = FindRootNewtons(expr, deriv, rangeMin, rangeMax, epsilon, out int newtonsIterations);
+                Util.LogResult(expr, exprString, newtonsRoot, epsilon, "Newton's", newtonsIterations);
 
                 break;
             case 2:
@@ -106,10 +106,10 @@ public class Program
                 int iterations = Util.ReadInt32(1);
                 Console.WriteLine();
 
-                bisectionRoot = FindRootBisection(expr, rangeMin, rangeMax, iterations);
-                Util.LogResult(expr, exprString, bisectionRoot, iterations, "Bisection");
-                newtonsRoot = FindRootNewtons(expr, deriv, rangeMin, rangeMax, iterations);
-                Util.LogResult(expr, exprString, newtonsRoot, iterations, "Newton's");
+                bisectionRoot = FindRootBisection(expr, rangeMin, rangeMax, iterations, out double bisectionEpsilon);
+                Util.LogResult(expr, exprString, bisectionRoot, iterations, "Bisection", bisectionEpsilon);
+                newtonsRoot = FindRootNewtons(expr, deriv, rangeMin, rangeMax, iterations, out double newtonsEpsilon);
+                Util.LogResult(expr, exprString, newtonsRoot, iterations, "Newton's", newtonsEpsilon);
 
                 break;
             default:
@@ -121,7 +121,7 @@ public class Program
 
     #region Bisection method
 
-    private static double FindRootBisection(Func<double, double> expr, double min, double max, double eps)
+    private static double FindRootBisection(Func<double, double> expr, double min, double max, double eps, out int iterations)
     {
         double valueOfMin = expr(min);
         double valueOfMax = expr(max);
@@ -135,7 +135,38 @@ public class Program
         double prevPotRoot = lowerBound;
         double potRoot = (upperBound + lowerBound) * 0.5;
 
+        iterations = 0;
         while (Math.Abs(prevPotRoot - potRoot) > eps)
+        {
+            double result = expr(potRoot);
+
+            if (result < 0) lowerBound = potRoot;
+            else upperBound = potRoot;
+
+            prevPotRoot = potRoot;
+            potRoot = (upperBound + lowerBound) * 0.5;
+
+            iterations++;
+        }
+
+        return potRoot;
+    }
+
+    private static double FindRootBisection(Func<double, double> expr, double min, double max, int iters, out double epsilon)
+    {
+        double valueOfMin = expr(min);
+        double valueOfMax = expr(max);
+        bool isIncreasing = valueOfMin < valueOfMax;
+
+        if (valueOfMin * valueOfMax > 0 || iters <= 0) throw new ArgumentException("Złe argumenty");
+
+        double upperBound = isIncreasing ? max : min;
+        double lowerBound = isIncreasing ? min : max;
+
+        double prevPotRoot = lowerBound;
+        double potRoot = (upperBound + lowerBound) * 0.5;
+
+        for (var i = 1; i < iters; i++)
         {
             double result = expr(potRoot);
 
@@ -146,32 +177,7 @@ public class Program
             potRoot = (upperBound + lowerBound) * 0.5;
         }
 
-        return potRoot;
-    }
-
-    private static double FindRootBisection(Func<double, double> expr, double min, double max, int iterations)
-    {
-        double valueOfMin = expr(min);
-        double valueOfMax = expr(max);
-        bool isIncreasing = valueOfMin < valueOfMax;
-
-        if (valueOfMin * valueOfMax > 0 || iterations <= 0) throw new ArgumentException("Złe argumenty");
-
-        double upperBound = isIncreasing ? max : min;
-        double lowerBound = isIncreasing ? min : max;
-
-        double potRoot = (upperBound + lowerBound) * 0.5;
-
-        for (var i = 0; i < iterations - 1; i++)
-        {
-            double result = expr(potRoot);
-
-            if (result < 0) lowerBound = potRoot;
-            else upperBound = potRoot;
-
-            potRoot = (upperBound + lowerBound) * 0.5;
-        }
-
+        epsilon = Math.Abs(prevPotRoot - potRoot);
         return potRoot;
     }
 
@@ -179,7 +185,7 @@ public class Program
 
     #region Newton's method
 
-    private static double FindRootNewtons(Func<double, double> expr, Func<double, double> deriv, double min, double max, double eps)
+    private static double FindRootNewtons(Func<double, double> expr, Func<double, double> deriv, double min, double max, double eps, out int iterations)
     {
         double valueOfMin = expr(min);
         double valueOfMax = expr(max);
@@ -190,32 +196,36 @@ public class Program
         double prevPotRoot = isIncreasing ? max : min;
         double potRoot = prevPotRoot - expr(prevPotRoot) / deriv(prevPotRoot);
 
+        iterations = 0;
         while (Math.Abs(potRoot - prevPotRoot) > eps)
         {
             prevPotRoot = potRoot;
             potRoot = prevPotRoot - expr(prevPotRoot) / deriv(prevPotRoot);
+
+            iterations++;
         }
 
         return potRoot;
     }
 
-    private static double FindRootNewtons(Func<double, double> expr, Func<double, double> deriv, double min, double max, int iterations)
+    private static double FindRootNewtons(Func<double, double> expr, Func<double, double> deriv, double min, double max, int iters, out double epsilon)
     {
         double valueOfMin = expr(min);
         double valueOfMax = expr(max);
         bool isIncreasing = valueOfMin < valueOfMax;
 
-        if (valueOfMin * valueOfMax > 0 || iterations <= 0) throw new ArgumentException("Złe argumenty");
+        if (valueOfMin * valueOfMax > 0 || iters <= 0) throw new ArgumentException("Złe argumenty");
 
         double prevPotRoot = isIncreasing ? max : min;
         double potRoot = prevPotRoot - expr(prevPotRoot) / deriv(prevPotRoot);
 
-        for (var i = 0; i < iterations - 1; i++)
+        for (var i = 1; i < iters; i++)
         {
             prevPotRoot = potRoot;
             potRoot = prevPotRoot - expr(prevPotRoot) / deriv(prevPotRoot);
         }
 
+        epsilon = Math.Abs(prevPotRoot - potRoot);
         return potRoot;
     }
 

@@ -34,14 +34,14 @@ public static class Util
         }
     }
 
-    public static void LogResult(Func<double, double> expression, string function, double root, double epsilon, string method)
+    public static void LogResult(Func<double, double> expression, string function, double root, double epsilon, string method, int neededIterations)
     {
-        Console.WriteLine($"Function f(x) = {function} is zero when x = {root:n20}\n(calculated using {method} method, with a precision of {epsilon}).\nf({root:n20}) = {expression(root):n20}\n");
+        Console.WriteLine($"Function f(x) = {function} is zero when x = {root:n20}\n(calculated using {method} method, with a precision of {epsilon}).\nf({root:n20}) = {expression(root):n20}\nNeeded iterations = {neededIterations}\n");
     }
 
-    public static void LogResult(Func<double, double> expression, string function, double root, int iterations, string method)
+    public static void LogResult(Func<double, double> expression, string function, double root, int iterations, string method, double achievedEpsilon)
     {
-        Console.WriteLine($"Function f(x) = {function} is zero when x = {root:n20}\n(calculated using {method} method, after {iterations} iterations).\nf({root:n20}) = {expression(root):n20}\n");
+        Console.WriteLine($"Function f(x) = {function} is zero when x = {root:n20}\n(calculated using {method} method, after {iterations} iterations).\nf({root:n20}) = {expression(root):n20}\nAchieved epsilon = {achievedEpsilon}\n");
     }
 
     public static bool Between(this double val, double min, double max)
