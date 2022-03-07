@@ -78,6 +78,31 @@ public static class Util
         return val >= min && val <= max;
     }
 
+    public static (double min, double max) FindBestRange(double min, double max, double extend, params double[] points)
+    {
+        double length = max - min;
+        extend *= length;
+
+        foreach (var point in points)
+        {
+            bool isInside = point.Between(min, max);
+            if (!isInside)
+            {
+                if (point < min)
+                {
+                    min = point - extend;
+                } 
+                else
+                {
+                    max = point + extend;
+                }
+            }
+        }
+
+        return (min, max);
+
+    }
+
     public static void CreateDirectory(in string dirPath)
     {
         try

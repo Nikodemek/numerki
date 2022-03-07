@@ -99,7 +99,6 @@ public class Program
         rangeMax = Util.ReadDouble(min: rangeMin, def: defMax);
         Console.WriteLine();
 
-        gnuplot.FuncDataToFile(expr, rangeMin, rangeMax);
 
         Console.WriteLine("Specify the stop condition.");
         Console.WriteLine("1. Epsilon");
@@ -136,6 +135,9 @@ public class Program
                 throw new ArgumentException("That should not have happened.");
         }
 
+        (rangeMin, rangeMax) = Util.FindBestRange(rangeMin, rangeMax, 0.2, bisectionRoot, newtonsRoot);
+
+        gnuplot.FuncDataToFile(expr, rangeMin, rangeMax);
         gnuplot.PointDataToFile(expr, bisectionRoot, newtonsRoot);
     }
 
