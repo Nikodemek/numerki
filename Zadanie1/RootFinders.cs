@@ -2,7 +2,7 @@
 
 namespace Zadanie1;
 
-public class RootFinders
+public static class RootFinders
 {
     public static double FindBisection(Func<double, double> expr, double min, double max, double eps, out int iterations)
     {

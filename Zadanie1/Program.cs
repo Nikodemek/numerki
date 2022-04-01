@@ -5,28 +5,28 @@ namespace Zadanie1;
 public class Program
 {
     private static readonly Function[] Functions = {
-        new Function(
+        new(
             Expr: x => x * x * x - 2 * x - 5,
             Deriv: x => 3 * x * x - 2,
             ExprString: "x^3 - 2x - 5",
             DefMin: -10.0,
-            DefMax: 5.0
+            DefMax: 9.0
             ),
-        new Function(
-            Expr: x => Math.Pow(2, x - 2) - 1,
+        new(
+            Expr: x => Math.Pow(2, x - 2) - 3,
             Deriv: x => Math.Pow(2, x - 2) * Math.Log(2),
             ExprString: "2^(x - 2) - 1",
-            DefMin: -2.0,
-            DefMax: 10.0
+            DefMin: -1.0,
+            DefMax: 4.5
             ),
-        new Function(
+        new(
             Expr: x => Math.Sin(x * x - 2),
             Deriv: x => 2 * x * Math.Cos(x * x - 2),
             ExprString: "sin(x^2 - 2)",
-            DefMin: 0.8,
-            DefMax: 1.7
+            DefMin: -2.0,
+            DefMax: 1.0
             ),
-        new Function(
+        new(
             Expr: x => Math.Pow(3, Math.Sin(x * x * x - 2)) - 2,
             Deriv: x => 3 * x * x * Math.Pow(3, Math.Sin(x * x * x - 2)) * Math.Cos(x * x * x - 2) * Math.Log(3),
             ExprString: "3^(sin(x^3 - 2)) - 2",
@@ -52,7 +52,7 @@ public class Program
 
         int defFunc = rand.Next(1, funcsLenght + 1);
         int defStopCond = rand.Next(1, 3);
-        int defIters = rand.Next(1, 500);
+        int defIters = rand.Next(1, 100);
         double defEps = Math.Pow(0.1, rand.Next(1, 10));
 
         double rangeMin, rangeMax;
@@ -91,7 +91,7 @@ public class Program
                 Console.Write($"Enter epsilon (default = {defEps}): ");
                 double epsilon = Util.ReadDouble(min: 0, def: defEps);
                 Console.WriteLine();
-
+                
                 bisectionRoot = RootFinders.FindBisection(expr, rangeMin, rangeMax, epsilon, out int bisectionIterations);
                 Util.LogResult(expr, exprString, bisectionRoot, epsilon, "Bisection", bisectionIterations);
                 newtonsRoot = RootFinders.FindNewtons(expr, deriv, rangeMin, rangeMax, epsilon, out int newtonsIterations);
@@ -114,7 +114,7 @@ public class Program
         }
 
         (rangeMin, rangeMax) = Util.FindBestRange(rangeMin, rangeMax, 0.2, bisectionRoot, newtonsRoot);
-
+        
         gnuplot.FuncDataToFile(expr, rangeMin, rangeMax);
         gnuplot.PointDataToFile(expr, bisectionRoot, newtonsRoot);
     }

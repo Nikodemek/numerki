@@ -19,7 +19,7 @@ public static class Util
                     return def;
                 }
 
-                if (Int32.TryParse(input, NumberStyles.Number, NumberFormatInfo.InvariantInfo, out int output) && output.Between(min, max))
+                if (Int32.TryParse(input, out int output) && output.Between(min, max))
                 {
                     return output;
                 }
@@ -82,7 +82,7 @@ public static class Util
     {
         double length = max - min;
         extend *= length;
-
+        
         foreach (var point in points)
         {
             bool isInside = point.Between(min, max);
@@ -100,14 +100,13 @@ public static class Util
         }
 
         return (min, max);
-
     }
 
     public static void CreateDirectory(in string dirPath)
     {
         try
         {
-            if (dirPath != null && !Directory.Exists(dirPath))
+            if (!(dirPath is null || Directory.Exists(dirPath)))
             {
                 Directory.CreateDirectory(dirPath);
             }
