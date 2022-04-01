@@ -1,4 +1,4 @@
-namespace Zadanie2;
+namespace Zadanie2.Dao;
 
 public interface IFileReader<T>
 {
