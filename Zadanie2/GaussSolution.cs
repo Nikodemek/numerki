@@ -88,10 +88,10 @@ public class GaussSolution
         int rowSize = matrix.GetLength(1);
 
         var allZerosIndices = new List<int>();
-        for (int i = 0; i < columnSize; i++)
+        for (var i = 0; i < columnSize; i++)
         {
             bool isAllZeros = true;
-            for (int j = 0; j < rowSize - 1; j++)
+            for (var j = 0; j < rowSize - 1; j++)
             {
                 if (matrix[i, j] != 0)
                 {
