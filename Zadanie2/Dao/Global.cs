@@ -7,7 +7,7 @@ public static class Global
             Environment.GetFolderPath(
                 Environment.SpecialFolder.MyDocuments
                 ),
-            "numerki-2022"
+            "numerki_2022"
             );
 
     public static readonly bool Tests = false;
