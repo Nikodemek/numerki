@@ -1,62 +1,52 @@
-using System.Runtime.InteropServices;
+using System.Text;
 using Zadanie2.Dao;
 using Zadanie2.Utils;
 
 namespace Zadanie2;
+using ESC = GaussSolution.EquationsSystemClass;
 
 class Program {
   
     public static void Main()
     {
-        Global.EnsureDirectoryIsValid(true);
+        Global.EnsureDirectoryIsValid();
 
         var matricesReader = new MatricesReader("matrices.txt");
         var matrices = matricesReader.Read();
 
-        /*foreach (var matrix in matrices)
-        {
-            matrix.Print();
-        }*/
+        /*var test = matrices[1];
 
-        var test = new double[,]
-        {
-            {3, -1, 2, -1, -13},
-            {3, -1, 1, 1, 1},
-            {1, 2, -1, 2, 21},
-            {-1, 1, -2, -3, -5},
-        };
-        
-        var test1 = new double[,]
-        {
-            {0, 0, 1, 3},
-            {1, 0, 0, 7},
-            {0, 1, 0, 5},
-        };
+        GaussSolution.PrepareMatrix(test);
 
-        /*test = GaussSolution.PrepareMatrix(test);
         test.Print();
+        GaussSolution.Elimination(test);*/
 
-        test = GaussSolution.Elimination(test);
-        test.Print();*/
-
-/*        for (int i = 0; i < test.GetLength(0); i++)
+        foreach (var mat in matrices[3..4])
         {
-            for (int j = 0; j < test.GetLength(1); j++)
-            {
-                Console.Write(Math.Round(test[i, j], 4) + " ");
-            }
-            Console.WriteLine();
-        }*/
+            var solutions = GaussSolution.Solve(mat, out var equationsSystemClass);
+            var sb = new StringBuilder(solutions.Length * 2);
+            sb.Append(Translation(equationsSystemClass));
+            sb.Append(", X = { ");
+            foreach (var solution in solutions) sb.Append(solution).Append(", ");
+            sb.Remove(sb.Length - 2, 2);
+            sb.Append(" }");
 
-        var list = GaussSolution.Solve(test1);
-        test1.Print();
-        list.Reverse();
-        foreach (var d in list)
-        {
-            Console.WriteLine(Math.Round(d, 4));
+            mat.Print();
+            Console.WriteLine($"{sb}\n\n\n");
         }
 
 
         Console.ReadKey();
+    }
+
+    private static string Translation(ESC esc)
+    {
+        return esc switch
+        {
+            ESC.Independent => "Ukad³ad oznaczony",
+            ESC.Dependent => "Ukad³ad nieoznaczony",
+            ESC.Inconsistent => "Ukad³ad sprzeczny",
+            _ => throw new ArgumentException($"Not recognized EquationSystemClass '{esc}'", nameof(esc))
+        };
     }
 }

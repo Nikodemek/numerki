@@ -1,0 +1,41 @@
+Zadanie 2 (6 tydzień)
+Celem zadania drugiego jest zaimplementowanie jednej z metod rozwiązywania układu N równań liniowych z N niewiadomymi:
+
+Wariant 1: metoda eliminacji Gaussa
+Wariant 2: metoda eliminacji Jordana
+Wariant 3: metoda iteracyjna Jacobiego (iteracji prostej)
+Wariant 4: metoda iteracyjna Gaussa-Seidla
+
+Maksymalna ilość równań może być ograniczona z góry (np. 10), ale skonstruowany algorytm ma być uniwersalny, a użytkownik ma mieć możliwość wyboru ilości równań w trakcie pracy programu. Należy zapewnić możliwość wygodnego wprowadzania współczynników układu równań poprzez wczytywanie ich z pliku.
+
+W przypadku metod eliminacji program musi automatycznie wybierać element podstawowy i wykrywać sytuacje, kiedy układ jest sprzeczny albo nieoznaczony.
+
+W metodach iteracyjnych przed przystąpieniem do obliczeń należy sprawdzać czy podana macierz spełnia warunki zbieżności. Metody iteracyjne powinny posiadać dwa możliwe warunki stopu: ilość iteracji albo uzyskanie podanej przez użytkownika dokładności (analogicznie do zadania 1).
+
+W sprawozdaniu należy zamieścić informację jak zachowuje się program w przypadku układów sprzecznych i nieoznaczonych (podać przykładowe układy dla których uzyskano wyniki).
+
+Sprawozdanie w formacie PDF oraz kod źródłowy należy umieścić tutaj.
+
+Przykłady do rozwiązania:
+a) ⎡⎣⎢321352171⎤⎦⎥⎡⎣⎢x1x2x3⎤⎦⎥=⎡⎣⎢12338⎤⎦⎥ ,   x1=1 ,   x2=2 ,   x3=3
+
+b) ⎡⎣⎢32−435−1017−14⎤⎦⎥⎡⎣⎢x1x2x3⎤⎦⎥=⎡⎣⎢120−40⎤⎦⎥ ,   nieoznaczony
+
+c) ⎡⎣⎢32−435−1017−14⎤⎦⎥⎡⎣⎢x1x2x3⎤⎦⎥=⎡⎣⎢120−20⎤⎦⎥ ,   sprzeczny
+
+d) ⎡⎣⎢⎢⎢0.5−0.06250.18750.0625−0.06250.5000.187500.3750.1250.062500.1250.25⎤⎦⎥⎥⎥⎡⎣⎢⎢⎢x1x2x3x4⎤⎦⎥⎥⎥=⎡⎣⎢⎢⎢1.5−1.62510.4375⎤⎦⎥⎥⎥ ,   x1=2 ,   x2=−3 ,   x3=1.5 ,   x4=0.5
+
+e) ⎡⎣⎢⎢⎢35172−1−181111−122−7⎤⎦⎥⎥⎥⎡⎣⎢⎢⎢x1x2x3x4⎤⎦⎥⎥⎥=⎡⎣⎢⎢⎢0−446⎤⎦⎥⎥⎥  ,   sprzeczny
+
+
+f) ⎡⎣⎢⎢⎢331−1−1−12121−1−2−112−3⎤⎦⎥⎥⎥⎡⎣⎢⎢⎢x1x2x3x4⎤⎦⎥⎥⎥=⎡⎣⎢⎢⎢−13121−5⎤⎦⎥⎥⎥  ,   x1=1 ,   x2=3 ,   x3=−4 ,   x4=5
+
+g) ⎡⎣⎢010001100⎤⎦⎥⎡⎣⎢x1x2x3⎤⎦⎥=⎡⎣⎢375⎤⎦⎥ ,   x1=7 ,   x2=5 ,   x3=3
+
+h) ⎡⎣⎢1045−5−71124⎤⎦⎥⎡⎣⎢x1x2x3⎤⎦⎥=⎡⎣⎢3−419⎤⎦⎥ ,   x1=1 ,   x2=2 ,   x3=3
+
+i) ⎡⎣⎢6−50,9−450,9223,6⎤⎦⎥⎡⎣⎢x1x2x3⎤⎦⎥=⎡⎣⎢41113,5⎤⎦⎥ ,  nieoznaczony
+
+j) ⎡⎣⎢10.1−0.10.21−0.20.3−0.31⎤⎦⎥⎡⎣⎢x1x2x3⎤⎦⎥=⎡⎣⎢1.50.80.7⎤⎦⎥ ,   x1=1 ,   x2=1 ,   x3=1
+
+Uwaga: niektóre przykłady nie dają się rozwiązać metodami iteracyjnymi, ponieważ nie spełniają warunków zbieżności. Nie ma więc sensu testowanie metod iteracyjnych na tych przykładach.

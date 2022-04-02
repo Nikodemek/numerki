@@ -1,4 +1,4 @@
-﻿namespace Zadanie2.Dao;
+﻿namespace Zadanie2.Utils;
 
 public static class Global
 {
@@ -10,7 +10,7 @@ public static class Global
             "numerki_2022"
             );
 
-    public static readonly bool Tests = false;
+    public static readonly double DoubleTolerance = 1e-10;
 
     public static void EnsureDirectoryIsValid(bool writePath = false)
     {

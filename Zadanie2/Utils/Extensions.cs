@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace Zadanie2.Utils;
 
 public static class Extensions
 {
-    public static void Print(this double[,] matrix)
+    public static void Print(this double[,] matrix, int digits = 10)
     {
         if (matrix is null) throw new ArgumentException("Matrix can not be null");
 
@@ -24,7 +23,7 @@ public static class Extensions
             for (int j = 0; j < yLength; j++)
             {
                 double value = matrix[i, j];
-                string valueToInsert = value.ToString();
+                string valueToInsert = value.ToString($"g{digits}");
                 int valueToInsertLen = valueToInsert.Length;
 
                 values[i, j] = valueToInsert;
@@ -46,5 +45,11 @@ public static class Extensions
         }
 
         Console.WriteLine(sb.ToString());
+    }
+
+    public static bool IsZero(this double d)
+    {
+        double tolerance = Global.DoubleTolerance;
+        return d <= tolerance && d >= -tolerance;
     }
 }
