@@ -65,13 +65,11 @@ public class GaussSolution
 
         var solutions = new double[columnSize];
 
-        double firstSolution = preparedMatrix[columnSize - 1, rowSize - 1] / preparedMatrix[columnSize - 1, columnSize - 1];
-        solutions[0] = Math.Round(firstSolution, precision);
-
-        int counter = 1;
-        for (var i = columnSize - 2; i >= 0; i--)
+        int counter = 0;
+        for (var i = columnSize - 1; i >= 0; i--)
         {
             double solution = preparedMatrix[i, rowSize - 1];
+
             for (var j = 0; j < counter; j++)
             {
                 solution -= solutions[j] * preparedMatrix[i, rowSize - j - 2];
@@ -88,12 +86,31 @@ public class GaussSolution
     {
         int columnSize = matrix.GetLength(0);
         int rowSize = matrix.GetLength(1);
-        if (matrix[columnSize - 1, rowSize - 2] == 0.0)
+
+        var allZerosIndices = new List<int>();
+        for (int i = 0; i < columnSize; i++)
         {
-            if (matrix[columnSize - 1, rowSize - 1] == 0.0) return EquationsSystemClass.Dependent;
-            return EquationsSystemClass.Inconsistent;
+            bool isAllZeros = true;
+            for (int j = 0; j < rowSize - 1; j++)
+            {
+                if (matrix[i, j] != 0)
+                {
+                    isAllZeros = false;
+                    break;
+                }
+            }
+            if (isAllZeros) allZerosIndices.Add(i);
         }
-        return EquationsSystemClass.Independent;
+
+        foreach (var zeroRows in allZerosIndices)
+        {
+            if (matrix[zeroRows, rowSize - 1] != 0)
+            {
+                return EquationsSystemClass.Inconsistent;
+            }
+        }
+
+        return allZerosIndices.Count > 0 ? EquationsSystemClass.Dependent : EquationsSystemClass.Independent;
     }
 
     private static void ChangeRows(double[,] matrix, int a, int b)

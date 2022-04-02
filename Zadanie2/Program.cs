@@ -14,19 +14,12 @@ class Program {
         var matricesReader = new MatricesReader("matrices.txt");
         var matrices = matricesReader.Read();
 
-        /*var test = matrices[1];
-
-        GaussSolution.PrepareMatrix(test);
-
-        test.Print();
-        GaussSolution.Elimination(test);*/
-
-        foreach (var mat in matrices[3..4])
+        foreach (var mat in matrices)
         {
             var solutions = GaussSolution.Solve(mat, out var equationsSystemClass);
+
             var sb = new StringBuilder(solutions.Length * 2);
-            sb.Append(Translation(equationsSystemClass));
-            sb.Append(", X = { ");
+            sb.Append("Uk³ad ").Append(Translation(equationsSystemClass)).Append(", X = { ");
             foreach (var solution in solutions) sb.Append(solution).Append(", ");
             sb.Remove(sb.Length - 2, 2);
             sb.Append(" }");
@@ -35,7 +28,6 @@ class Program {
             Console.WriteLine($"{sb}\n\n\n");
         }
 
-
         Console.ReadKey();
     }
 
@@ -43,9 +35,9 @@ class Program {
     {
         return esc switch
         {
-            ESC.Independent => "Ukad³ad oznaczony",
-            ESC.Dependent => "Ukad³ad nieoznaczony",
-            ESC.Inconsistent => "Ukad³ad sprzeczny",
+            ESC.Independent => "oznaczony",
+            ESC.Dependent => "nieoznaczony",
+            ESC.Inconsistent => "sprzeczny",
             _ => throw new ArgumentException($"Not recognized EquationSystemClass '{esc}'", nameof(esc))
         };
     }
