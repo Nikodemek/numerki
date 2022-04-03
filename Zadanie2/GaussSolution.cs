@@ -8,7 +8,7 @@ public class GaussSolution
     {
         var preparedMatrix = Arrayer.Copy(matrix);
         
-        MakeTriangular(preparedMatrix);
+        MakeEchelon(preparedMatrix);
         GaussianElimination(preparedMatrix);
         equationsSystemClass = GetMatrixClass(preparedMatrix);
 
@@ -21,7 +21,7 @@ public class GaussSolution
         };
     }
 
-    public static void MakeTriangular(double[,] matrix)
+    private static void MakeEchelon(double[,] matrix)
     {
         int columnSize = matrix.GetLength(0);
         int rowSize = matrix.GetLength(1);
@@ -37,7 +37,7 @@ public class GaussSolution
         }
     }
 
-    public static void GaussianElimination(double[,] matrix)
+    private static void GaussianElimination(double[,] matrix)
     {
         int columnSize = matrix.GetLength(0);
         int rowSize = matrix.GetLength(1);
@@ -58,28 +58,28 @@ public class GaussSolution
         }
     }
 
-    private static double[] CalculateSolutions(double[,] preparedMatrix, int precision = 2)
+    private static double[] CalculateSolutions(double[,] matrix, int precision = 2)
     {
-        int columnSize = preparedMatrix.GetLength(0);
-        int rowSize = preparedMatrix.GetLength(1);
+        int columnSize = matrix.GetLength(0);
+        int rowSize = matrix.GetLength(1);
 
         var solutions = new double[columnSize];
 
-        int counter = 0;
-        for (var i = columnSize - 1; i >= 0; i--)
+        for (int i = columnSize - 1; i >= 0; i--)
         {
-            double solution = preparedMatrix[i, rowSize - 1];
+            double solution = matrix[i, rowSize - 1];
 
-            for (var j = 0; j < counter; j++)
+            for (var j = 0; j < columnSize - i; j++)
             {
-                solution -= solutions[j] * preparedMatrix[i, rowSize - j - 2];
+                double variable = solutions[columnSize - j - 1];
+                double coefficient = matrix[i, rowSize - j - 2];
+                solution -= variable * coefficient;
             }
 
-            solution /= preparedMatrix[i, i];
-            solutions[counter] = Math.Round(solution, precision);
-            counter++;
+            solution /= matrix[i, i];
+            solutions[i] = Math.Round(solution, precision);
         }
-        return solutions.Reverse();
+        return solutions;
     }
 
     private static EquationsSystemClass GetMatrixClass(double[,] matrix)
@@ -104,19 +104,16 @@ public class GaussSolution
 
         foreach (var zeroRows in allZerosIndices)
         {
-            if (matrix[zeroRows, rowSize - 1] != 0)
-            {
-                return EquationsSystemClass.Inconsistent;
-            }
+            if (matrix[zeroRows, rowSize - 1] != 0) return EquationsSystemClass.Inconsistent;
         }
 
-        return allZerosIndices.Count > 0 ? EquationsSystemClass.Dependent : EquationsSystemClass.Independent;
+        if (allZerosIndices.Count > 0) return EquationsSystemClass.Dependent;
+        else return EquationsSystemClass.Independent;
     }
 
     private static void ChangeRows(double[,] matrix, int a, int b)
     {
         int rowSize = matrix.GetLength(1);
-        
         for (var i = 0; i < rowSize; i++)
         {
             (matrix[a, i], matrix[b, i]) = (matrix[b, i], matrix[a, i]);
