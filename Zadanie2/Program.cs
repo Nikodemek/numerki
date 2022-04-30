@@ -9,7 +9,7 @@ class Program {
   
     public static void Main()
     {
-        Global.EnsureDirectoryIsValid();
+        Global.EnsureDirectoryIsValid(true);
 
         var matricesReader = new MatricesReader("matrices.txt");
         var matrices = matricesReader.Read();
@@ -19,7 +19,7 @@ class Program {
             var solutions = GaussSolution.Solve(mat, out var equationsSystemClass);
 
             var sb = new StringBuilder(solutions.Length * 2);
-            sb.Append("Uk³ad ").Append(Translation(equationsSystemClass)).Append(", X = { ");
+            sb.Append("Uklad ").Append(Translation(equationsSystemClass)).Append(", X = { ");
             foreach (var solution in solutions) sb.Append(solution).Append(", ");
             sb.Remove(sb.Length - 2, 2);
             sb.Append(" }");
