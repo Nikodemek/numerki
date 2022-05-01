@@ -37,17 +37,17 @@ class Program {
         using var gnuplot = new GNUPlot();
 
         gnuplot.FuncDataToFile(Functions[0].Expr, Functions[0].DefMin, Functions[0].DefMax, true);
-        gnuplot.FuncDataToFile(Functions[1].Expr, Functions[1].DefMin, Functions[1].DefMax, false);
-        gnuplot.PointDataToFile(Functions[1].Expr, Functions[1].DefMin, Functions[1].DefMax);
+        gnuplot.FuncDataToFile(Functions[1].Expr, -10, 10, false);
+        gnuplot.PointDataToFile(Functions[1].Expr, Interpolation.GetKnots(3, -1, 4.5));
 
         gnuplot.Start();
 
-        var fileManager = new FileManager("test");
+        /*var fileManager = new FileManager("test");
         var sth = fileManager.Read();
         foreach (var d in sth)
         {
             Console.WriteLine(d);
-        }
+        }*/
 
         Console.ReadKey();
     }
