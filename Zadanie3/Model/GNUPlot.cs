@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using Zadanie3.Utils;
 
@@ -8,10 +9,13 @@ namespace Zadanie3.Model;
 
 public class GNUPlot : IDisposable
 {
-    private static readonly string GnuplotPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "gnuplot", "bin", "gnuplot.exe");
+    private static readonly string GnuplotPath = 
+        RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? 
+        Path.Combine("/", "usr", "bin", "gnuplot") :
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "gnuplot", "bin", "gnuplot.exe");
     private static readonly string BaseDataDirPath = Path.Combine(Path.GetTempPath(), "metody_numeryczne_2022");
 
-    private static uint instances = 0;
+    private static uint _instances = 0;
 
     private readonly string DataDirPath;
     private readonly string OrigFunctionDataFilePath;
@@ -23,14 +27,14 @@ public class GNUPlot : IDisposable
 
     public GNUPlot()
     {
-        DataDirPath = Path.Combine(BaseDataDirPath, $"assets-({instances})");
+        DataDirPath = Path.Combine(BaseDataDirPath, $"assets-({_instances})");
         OrigFunctionDataFilePath = Path.Combine(DataDirPath, "orig_function_data.dat");
         InterpolationFunctionDataFilePath = Path.Combine(DataDirPath, "interpolation_function_data.dat");
         PointDataFilePath = Path.Combine(DataDirPath, "points_data.dat");
 
         DirectoryManager.CreateDirectory(DataDirPath);
 
-        instances++;
+        _instances++;
     }
 
     public void FuncDataToFile(Func<double, double> expression, double min, double max, bool funcSwitch, double step = 0.01)

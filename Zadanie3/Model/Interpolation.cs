@@ -2,11 +2,11 @@
 
 public class Interpolation
 {
-    private readonly Function _func;
+    private readonly Func<double, double> _func;
     public double[,] Knots { get; }
     private double _diff;
 
-    public Interpolation(Function func, double min, double max, int knotsCount)
+    public Interpolation(Func<double, double> func, double min, double max, int knotsCount)
     {
         this._func = func;
         Knots = GetKnots(knotsCount, min, max);
@@ -25,7 +25,7 @@ public class Interpolation
         for (var i = 0; i < knotsCount; i++)
         {
             knots[i, 0] = min + i * _diff;
-            knots[i, 1] = _func.Expr(knots[i, 0]);
+            knots[i, 1] = _func(knots[i, 0]);
         }
 
         return knots;

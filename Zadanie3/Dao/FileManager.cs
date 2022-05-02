@@ -46,6 +46,6 @@ public class FileManager : IFileReader<double[,]>
                 clearedData[i][j] = Convert.ToDouble(splitLine[j]);
         }
 
-        return ArrayConverter.ConvertToTwoDimensional(clearedData);
+        return ArraysUtil.ConvertToTwoDimensional(clearedData);
     }
 }
