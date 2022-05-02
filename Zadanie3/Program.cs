@@ -31,7 +31,7 @@ class Program {
             DefMax: 0.8
             ),
         new(
-            Expr: x => Math.Abs(x),
+            Expr: Math.Abs,
             ExprString: "|x|",
             DefMin: -10,
             DefMax: 10
@@ -43,27 +43,16 @@ class Program {
         using var gnuplot = new GNUPlot();
 
         gnuplot.FuncDataToFile(Functions[4].Expr, -10, 9, true);
-
-        Interpolation interpolation = new Interpolation(Functions[4], -10, 9, 11);
+        Interpolation interpolation = new Interpolation(Functions[4], -10, 9, 5);
 
         gnuplot.FuncDataToFile(
             abscissa => interpolation.CalculateValue(abscissa),
             -10, 9, false
             );
 
-        double[,] knots = interpolation.GetKnots(11, - 10, 9);
-        
+        double[,] knots = interpolation.Knots;
         gnuplot.PointDataToFile(knots);
-        
-        
         gnuplot.Start();
-
-        /*var fileManager = new FileManager("test");
-        var sth = fileManager.Read();
-        foreach (var d in sth)
-        {
-            Console.WriteLine(d);
-        }*/
 
         Console.ReadKey();
     }
