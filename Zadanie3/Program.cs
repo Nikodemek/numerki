@@ -1,4 +1,5 @@
-﻿using Zadanie3.Dao;
+﻿using System.Text;
+using Zadanie3.Dao;
 using Zadanie3.Model;
 using Zadanie3.Utils;
 
@@ -31,6 +32,8 @@ class Program {
 
     public static void Main()
     {
+        CreateDefaultFile();
+        
         using var gnuplot = new GNUPlot();
 
         MiniMenu(gnuplot);
@@ -115,6 +118,19 @@ class Program {
         }
         gnuplot.FuncDataToFile(x => interpolation.CalculateValue(x), rangeMin, rangeMax, false);
         gnuplot.PointDataToFile(interpolation.Knots);
-        
+    }
+
+    private static void CreateDefaultFile()
+    {
+        Global.EnsureDirectoryIsValid();
+        using StreamWriter streamWriter = new StreamWriter(Path.Combine(Global.BaseDataDirPath, "default"));
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.AppendLine("1 2");
+        stringBuilder.AppendLine("2 3");
+        stringBuilder.AppendLine("3 2");
+        stringBuilder.AppendLine("4 1");
+
+        streamWriter.Write(stringBuilder);
     }
 }

@@ -34,4 +34,18 @@ public class ArraysUtil
 
         return (min, max);
     }
+    
+    public static double CheckDiff(double[,] array, int columnNum)
+    {
+        double diff = Math.Abs(array[0, columnNum] - array[1, columnNum]);
+        for (var i = 1; i < array.GetLength(0) - 1; i++)
+        {
+            double nextDiff = Math.Abs(array[i, columnNum] - array[i + 1, columnNum]);
+            if (Math.Abs(nextDiff - diff) > 0.00001)
+                throw new ArithmeticException("Differences between neighbor arguments needs to be the same!");
+            diff = nextDiff;
+        }
+        
+        return diff;
+    }
 }

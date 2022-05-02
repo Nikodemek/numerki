@@ -1,24 +1,30 @@
-﻿namespace Zadanie3.Model;
+﻿using Zadanie3.Utils;
+
+namespace Zadanie3.Model;
 
 public class Interpolation
 {
-    private readonly Func<double, double> _func;
+    private readonly Func<double, double>? _func;
     public double[,] Knots { get; }
     private double _diff;
 
     public Interpolation(Func<double, double> func, double min, double max, int knotsCount)
     {
-        this._func = func;
+        _func = func;
         Knots = GetKnots(knotsCount, min, max);
     }
 
     public Interpolation(double[,] knots)
     {
         Knots = knots;
+        _diff = ArraysUtil.CheckDiff(Knots, 0);
     }
 
     private double[,] GetKnots(int knotsCount, double min, double max)
     {
+        if (_func is null)
+            return null!;
+        
         double[,] knots = new double[knotsCount, 2];
         _diff = (max - min) / (knotsCount - 1);
 

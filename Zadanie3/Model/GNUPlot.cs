@@ -108,9 +108,11 @@ public class GNUPlot : IDisposable
         _gpProc.Start();
 
         _gpSw = _gpProc.StandardInput;
-        _gpSw.WriteLine($"plot '{OrigFunctionDataFilePath}' title \"F(x) - interpolowany\" w l, " +
-                        $"'{InterpolationFunctionDataFilePath}' title \"f(x) - interpolujacy\" w l, " +
-                        $"'{PointDataFilePath}' title \"Knots\" w p, ");
+        _gpSw.WriteLine(File.Exists(OrigFunctionDataFilePath)
+                ? $"plot '{OrigFunctionDataFilePath}' title \"F(x) - interpolowany\" w l, "
+                : "plot " +
+              $"'{InterpolationFunctionDataFilePath}' title \"f(x) - interpolujacy\" w l, " +
+              $"'{PointDataFilePath}' title \"Knots\" w p, ");
     }
 
     public void Stop()
