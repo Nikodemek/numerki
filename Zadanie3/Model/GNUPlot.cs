@@ -68,6 +68,27 @@ public class GNUPlot : IDisposable
         string correctData = stringBuilder.ToString().Replace(",", ".");
         writer.Write(correctData);
     }
+    
+    public void PointDataToFile(double[,] knots)
+    {
+        var stringBuilder = new StringBuilder();
+        using var writer = new StreamWriter(PointDataFilePath);
+
+        int length = knots.GetLength(0);
+        
+        for (var i = 0; i < length; i++)
+        {
+            double x = knots[i, 0];
+            double y = knots[i, 1];
+            stringBuilder.Append(x);
+            stringBuilder.Append('\t');
+            stringBuilder.Append(y);
+            stringBuilder.AppendLine();
+        }
+
+        string correctData = stringBuilder.ToString().Replace(",", ".");
+        writer.Write(correctData);
+    }
 
     public void Start()
     {
@@ -83,9 +104,9 @@ public class GNUPlot : IDisposable
         _gpProc.Start();
 
         _gpSw = _gpProc.StandardInput;
-        _gpSw.WriteLine($"plot '{OrigFunctionDataFilePath}' title \"F(x)\" w l, " +
-            $"'{InterpolationFunctionDataFilePath}' title \"f(x)\" w l, " +
-            $"'{PointDataFilePath}' title \"Knots\" w p, ");
+        _gpSw.WriteLine($"plot '{OrigFunctionDataFilePath}' title \"F(x) - interpolowany\" w l, " +
+                        $"'{InterpolationFunctionDataFilePath}' title \"f(x) - interpolujacy\" w l, " +
+                        $"'{PointDataFilePath}' title \"Knots\" w p, ");
     }
 
     public void Stop()

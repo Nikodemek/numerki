@@ -30,16 +30,32 @@ class Program {
             DefMin: -1.3,
             DefMax: 0.8
             ),
+        new(
+            Expr: x => Math.Abs(x),
+            ExprString: "|x|",
+            DefMin: -10,
+            DefMax: 10
+        ),
     };
 
     public static void Main()
     {
         using var gnuplot = new GNUPlot();
 
-        gnuplot.FuncDataToFile(Functions[0].Expr, Functions[0].DefMin, Functions[0].DefMax, true);
-        gnuplot.FuncDataToFile(Functions[1].Expr, -10, 10, false);
-        gnuplot.PointDataToFile(Functions[1].Expr, Interpolation.GetKnots(3, -1, 4.5));
+        gnuplot.FuncDataToFile(Functions[4].Expr, -10, 9, true);
 
+        Interpolation interpolation = new Interpolation(Functions[4], -10, 9, 11);
+
+        gnuplot.FuncDataToFile(
+            abscissa => interpolation.CalculateValue(abscissa),
+            -10, 9, false
+            );
+
+        double[,] knots = interpolation.GetKnots(11, - 10, 9);
+        
+        gnuplot.PointDataToFile(knots);
+        
+        
         gnuplot.Start();
 
         /*var fileManager = new FileManager("test");
