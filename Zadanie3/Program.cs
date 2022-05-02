@@ -41,6 +41,8 @@ class Program {
         gnuplot.Start();
 
         Console.ReadKey();
+        
+        gnuplot.Stop();
     }
     
     private static void MiniMenu(GNUPlot gnuplot)
