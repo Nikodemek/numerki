@@ -10,7 +10,7 @@ public static class DirectoryManager
     {
         try
         {
-            if (!(dirPath is null || Directory.Exists(dirPath)))
+            if (dirPath is not null && !Directory.Exists(dirPath))
             {
                 Directory.CreateDirectory(dirPath);
             }

@@ -1,4 +1,5 @@
-﻿using Zadanie3.Utils;
+﻿using System.Globalization;
+using Zadanie3.Utils;
 
 namespace Zadanie3.Dao;
 
@@ -25,25 +26,27 @@ public class FileManager : IFileReader<double[,]>
         return ClearData(rawData);
     }
 
-    private double[,] ClearData(string[] data)
+    private static double[,] ClearData(string[] data)
     {
         int rowLength = data.Length;
 
-        List<double[]> clearedData = new List<double[]>();
+        var clearedData = new List<double[]>();
 
         for (var i = 0; i < rowLength; i++)
         {
             string[] splitLine = data[i].Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-            if (splitLine.Length == 1)
-                throw new InvalidDataException("Too few arguments in one line.");
-            if (splitLine.Length == 0)
-                continue;
+            if (splitLine.Length == 1) throw new InvalidDataException("Too few arguments in one line.");
+            else if (splitLine.Length == 0) continue;
 
-            clearedData.Add(new double[2]);
-            
+            double[] line = new double[2];
+
             for (var j = 0; j < 2; j++)
-                clearedData[i][j] = Convert.ToDouble(splitLine[j]);
+            {
+                line[j] = Double.Parse(splitLine[j], NumberStyles.Float, NumberFormatInfo.InvariantInfo);
+            }
+
+            clearedData.Add(line);
         }
 
         return ArraysUtil.ConvertToTwoDimensional(clearedData);

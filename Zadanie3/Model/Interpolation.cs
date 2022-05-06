@@ -4,8 +4,8 @@ namespace Zadanie3.Model;
 
 public class Interpolation
 {
-    private readonly Func<double, double>? _func;
     public double[,] Knots { get; }
+    private readonly Func<double, double>? _func;
     private double _diff;
 
     public Interpolation(Func<double, double> func, double min, double max, int knotsCount)
@@ -22,10 +22,9 @@ public class Interpolation
 
     private double[,] GetKnots(int knotsCount, double min, double max)
     {
-        if (_func is null)
-            return null!;
+        if (_func is null) return null!;
         
-        double[,] knots = new double[knotsCount, 2];
+        var knots = new double[knotsCount, 2];
         _diff = (max - min) / (knotsCount - 1);
 
         for (var i = 0; i < knotsCount; i++)

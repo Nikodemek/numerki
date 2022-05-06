@@ -22,8 +22,8 @@ public class GNUPlot : IDisposable
     private readonly string InterpolationFunctionDataFilePath;
     private readonly string PointDataFilePath;
 
-    private StreamWriter _gpSw;
-    private Process _gpProc;
+    private StreamWriter? _gpSw;
+    private Process? _gpProc;
 
     public GNUPlot()
     {
@@ -45,10 +45,7 @@ public class GNUPlot : IDisposable
         for (double x = min; x < max; x += step)
         {
             double y = expression(x);
-            stringBuilder.Append(x);
-            stringBuilder.Append('\t');
-            stringBuilder.Append(y);
-            stringBuilder.AppendLine();
+            stringBuilder.Append(x).Append('\t').Append(y).AppendLine();
         }
 
         string correctData = stringBuilder.ToString().Replace(",", ".");
@@ -57,7 +54,7 @@ public class GNUPlot : IDisposable
 
     public void PointDataToFile(Func<double, double> expression, params double[] xes)
     {
-        var stringBuilder = new StringBuilder();
+        var stringBuilder = new StringBuilder(xes.Length * 2);
         using var writer = new StreamWriter(PointDataFilePath);
         
         foreach (var x in xes)
@@ -69,7 +66,7 @@ public class GNUPlot : IDisposable
             stringBuilder.AppendLine();
         }
 
-        string correctData = stringBuilder.ToString().Replace(",", ".");
+        string correctData = stringBuilder.Replace(',', '.').ToString();
         writer.Write(correctData);
     }
     
@@ -122,13 +119,11 @@ public class GNUPlot : IDisposable
     {
         if (_gpSw is not null)
         {
-            _gpSw.Close();
             _gpSw.Dispose();
             _gpSw = null;
         }        
         if (_gpProc is not null)
         {
-            _gpProc.Close();
             _gpProc.Dispose();
             _gpProc = null;
         }

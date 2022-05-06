@@ -8,7 +8,7 @@ public static class ConsolReader
     {
         while (true)
         {
-            string input = Console.ReadLine();
+            string? input = Console.ReadLine();
 
             if (input is not null)
             {
@@ -31,7 +31,7 @@ public static class ConsolReader
     {
         while (true)
         {
-            string input = Console.ReadLine();
+            string? input = Console.ReadLine();
 
             if (input is not null)
             {

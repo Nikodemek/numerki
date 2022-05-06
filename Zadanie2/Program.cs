@@ -5,7 +5,8 @@ using Zadanie2.Utils;
 namespace Zadanie2;
 using ESC = GaussSolution.EquationsSystemClass;
 
-class Program {
+class Program 
+{
   
     public static void Main()
     {
@@ -19,7 +20,7 @@ class Program {
             var solutions = GaussSolution.Solve(mat, out var equationsSystemClass);
 
             var sb = new StringBuilder(solutions.Length * 2);
-            sb.Append("Uklad ").Append(Translation(equationsSystemClass)).Append(", X = { ");
+            sb.Append("Uk³ad ").Append(Translation(equationsSystemClass)).Append(", X = { ");
             foreach (var solution in solutions) sb.Append(solution).Append(", ");
             sb.Remove(sb.Length - 2, 2);
             sb.Append(" }");

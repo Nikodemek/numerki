@@ -35,13 +35,10 @@ class Program {
         CreateDefaultFile();
         
         using var gnuplot = new GNUPlot();
-
         MiniMenu(gnuplot);
-        
         gnuplot.Start();
 
         Console.ReadKey();
-        
         gnuplot.Stop();
     }
     
@@ -110,6 +107,7 @@ class Program {
                 interpolation = new Interpolation(knots);
 
                 break;
+
             default:
                 fileManager = new FileManager("default");
                 
@@ -118,21 +116,21 @@ class Program {
                 interpolation = new Interpolation(knots);
                 break;
         }
-        gnuplot.FuncDataToFile(x => interpolation.CalculateValue(x), rangeMin, rangeMax, false);
+        gnuplot.FuncDataToFile(interpolation.CalculateValue, rangeMin, rangeMax, false);
         gnuplot.PointDataToFile(interpolation.Knots);
     }
 
     private static void CreateDefaultFile()
     {
         Global.EnsureDirectoryIsValid();
-        using StreamWriter streamWriter = new StreamWriter(Path.Combine(Global.BaseDataDirPath, "default"));
-        StringBuilder stringBuilder = new StringBuilder();
+        var stringBuilder = new StringBuilder();
 
         stringBuilder.AppendLine("1 2");
         stringBuilder.AppendLine("2 3");
         stringBuilder.AppendLine("3 2");
         stringBuilder.AppendLine("4 1");
 
+        using var streamWriter = new StreamWriter(Path.Combine(Global.BaseDataDirPath, "default"));
         streamWriter.Write(stringBuilder);
     }
 }
