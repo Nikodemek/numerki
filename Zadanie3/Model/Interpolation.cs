@@ -45,17 +45,16 @@ public class Interpolation
     {
         int length = Knots.GetLength(0);
         double value = 0;
-
+        
+        double t = (abscissa - Knots[0, 0]) / _diff;
         for (var i = 0; i < length; i++)
         {
-            double quotient = Knots[i, 1];
-            double xi = Knots[i, 0];
+            double quotient = 1;
             for (var j = 0; j < length; j++)
-            {
-                double xj = Knots[j, 0];
-                if (i != j) quotient *= (abscissa - xj) / (xi - xj);
-            }
-            value += quotient;
+                if (i != j)
+                    quotient *= (t - j) / (i - j);
+
+            value += quotient * Knots[i, 1];
         }
 
         return value;
@@ -64,7 +63,7 @@ public class Interpolation
     private static double CalculateDiff(double min, double max, int knotsCount)
     {
         if (knotsCount < 2) return max - min;
-        else return (max - min) / (knotsCount - 1);
+        return (max - min) / (knotsCount - 1);
     }
 
     private static double[,] CalculateKnots(Func<double, double> func, double diff, int knotsCount, double min)
