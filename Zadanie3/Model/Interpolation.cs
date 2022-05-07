@@ -41,7 +41,7 @@ public class Interpolation
         return value;
     }
 
-    /*public double CalculateValue(double abscissa)
+    /*public double CalculateValueUnevenlySpaced(double abscissa)
     {
         int length = Knots.GetLength(0);
         double value = 0;
@@ -64,7 +64,7 @@ public class Interpolation
     private static double CalculateDiff(double min, double max, int knotsCount)
     {
         if (knotsCount < 2) return max - min;
-        else return (max - min) / (knotsCount - 1);
+        return (max - min) / (knotsCount - 1);
     }
 
     private static double[,] CalculateKnots(Func<double, double> func, double diff, int knotsCount, double min)
