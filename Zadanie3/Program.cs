@@ -25,13 +25,14 @@ class Program {
             ExprString: "3^(sin(x^3 - 2)) - 2"
         ),
         new(
-            Expr: Math.Abs,
+            Expr: x => Math.Abs(x),
             ExprString: "|x|"
         ),
     };
 
     public static void Main()
     {
+        Console.WriteLine(Path.GetTempPath());
         CreateDefaultFile();
         
         using var gnuplot = new GNUPlot();
@@ -92,20 +93,18 @@ class Program {
                 interpolation = new Interpolation(expr, rangeMin, rangeMax, knotsCount);
         
                 gnuplot.FuncDataToFile(expr, rangeMin, rangeMax, true);
-
                 break;
             
             case 2:
                 Console.Write("Pass the filename (def = 'default'): ");
-                string filename = Console.ReadLine() ?? string.Empty;
-                if (string.IsNullOrEmpty(filename))
-                    filename = "default";
+                string filename = Console.ReadLine() ?? String.Empty;
+                if (String.IsNullOrEmpty(filename)) filename = "default";
                 fileManager = new FileManager(filename);
 
                 knots = fileManager.Read();
                 (rangeMin, rangeMax) = ArraysUtil.FindMinAndMaxAtColumn(knots, 0);
+                (rangeMin, rangeMax) = ArraysUtil.StrechRange(rangeMin, rangeMax, 0.3);
                 interpolation = new Interpolation(knots);
-
                 break;
 
             default:

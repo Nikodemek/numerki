@@ -4,55 +4,81 @@ namespace Zadanie3.Model;
 
 public class Interpolation
 {
-    public double[,] Knots { get; }
-    private readonly Func<double, double>? _func;
-    private double _diff;
+    public double[,] Knots { get; init; }
+
+    private readonly double _diff;
 
     public Interpolation(Func<double, double> func, double min, double max, int knotsCount)
     {
-        _func = func;
-        Knots = GetKnots(knotsCount, min, max);
+        double diff = CalculateDiff(min, max, knotsCount);
+        _diff = diff;
+        Knots = CalculateKnots(func, diff, knotsCount, min);
     }
 
     public Interpolation(double[,] knots)
     {
+        _diff = ArraysUtil.CheckDiff(knots, 0);
         Knots = knots;
-        _diff = ArraysUtil.CheckDiff(Knots, 0);
     }
 
-    private double[,] GetKnots(int knotsCount, double min, double max)
+    /*public double CalculateValue(double abscissa)
     {
-        if (_func is null) return null!;
-        
-        var knots = new double[knotsCount, 2];
-        _diff = (max - min) / (knotsCount - 1);
-
-        for (var i = 0; i < knotsCount; i++)
-        {
-            knots[i, 0] = min + i * _diff;
-            knots[i, 1] = _func(knots[i, 0]);
-        }
-
-        return knots;
-    }
-
-    public double CalculateValue(double abscissa)
-    {
-        double value = 0;
         int length = Knots.GetLength(0);
 
         double t = (abscissa - Knots[0, 0]) / _diff;
+        double value = 0;
         
         for (var i = 0; i < length; i++)
         {
-            double quotient = 1;
+            double quotient = Knots[i, 1];
             for (var j = 0; j < length; j++)
-                if (i != j)
-                    quotient *= (t - j) / (i - j);
-            
-            value += quotient * Knots[i, 1];
+            {
+                if (i != j) quotient *= (t - j) / (i - j);
+            }
+            value += quotient;
+        }
+        
+        return value;
+    }*/
+
+    public double CalculateValue(double abscissa)
+    {
+        int length = Knots.GetLength(0);
+        double value = 0;
+
+        for (var i = 0; i < length; i++)
+        {
+            double quotient = Knots[i, 1];
+            double xi = Knots[i, 0];
+            for (var j = 0; j < length; j++)
+            {
+                double xj = Knots[j, 0];
+                if (i != j) quotient *= (abscissa - xj) / (xi - xj);
+            }
+            value += quotient;
         }
 
         return value;
+    }
+
+    private static double CalculateDiff(double min, double max, int knotsCount)
+    {
+        if (knotsCount < 2) return max - min;
+        else return (max - min) / (knotsCount - 1);
+    }
+
+    private static double[,] CalculateKnots(Func<double, double> func, double diff, int knotsCount, double min)
+    {
+        var knots = new double[knotsCount, 2];
+
+        double argument = min;
+        for (var i = 0; i < knotsCount; i++)
+        {
+            knots[i, 0] = argument;
+            knots[i, 1] = func(argument);
+            argument += diff;
+        }
+        
+        return knots;
     }
 }

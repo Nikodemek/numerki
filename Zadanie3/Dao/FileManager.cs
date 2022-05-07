@@ -28,24 +28,21 @@ public class FileManager : IFileReader<double[,]>
 
     private static double[,] ClearData(string[] data)
     {
-        int rowLength = data.Length;
-
+        int rows = data.Length;
         var clearedData = new List<double[]>();
 
-        for (var i = 0; i < rowLength; i++)
+        for (var i = 0; i < rows; i++)
         {
-            string[] splitLine = data[i].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var splitLine = data[i].Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
             if (splitLine.Length == 1) throw new InvalidDataException("Too few arguments in one line.");
             else if (splitLine.Length == 0) continue;
 
-            double[] line = new double[2];
-
+            var line = new double[2];
             for (var j = 0; j < 2; j++)
             {
                 line[j] = Double.Parse(splitLine[j], NumberStyles.Float, NumberFormatInfo.InvariantInfo);
             }
-
             clearedData.Add(line);
         }
 

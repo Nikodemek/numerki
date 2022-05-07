@@ -46,4 +46,11 @@ public class ArraysUtil
         }
         return diff;
     }
+
+    public static (double min, double max) StrechRange(double min, double max, double percent)
+    {
+        double distance = max - min;
+        double addition = distance * percent;
+        return (min - addition, max + addition);
+    }
 }

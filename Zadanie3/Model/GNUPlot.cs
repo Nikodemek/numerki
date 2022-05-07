@@ -39,41 +39,37 @@ public class GNUPlot : IDisposable
 
     public void FuncDataToFile(Func<double, double> expression, double min, double max, bool funcSwitch, double step = 0.01)
     {
-        var stringBuilder = new StringBuilder();
-        using var writer = new StreamWriter(funcSwitch ? OrigFunctionDataFilePath : InterpolationFunctionDataFilePath);
+        var stringBuilder = new StringBuilder((int)((max - min) / step));
             
         for (double x = min; x < max; x += step)
         {
             double y = expression(x);
             stringBuilder.Append(x).Append('\t').Append(y).AppendLine();
         }
+        string correctData = stringBuilder.Replace(',', '.').ToString();
 
-        string correctData = stringBuilder.ToString().Replace(",", ".");
+        using var writer = new StreamWriter(funcSwitch ? OrigFunctionDataFilePath : InterpolationFunctionDataFilePath);
         writer.WriteLine(correctData);
     }
 
     public void PointDataToFile(Func<double, double> expression, params double[] xes)
     {
-        var stringBuilder = new StringBuilder(xes.Length * 2);
-        using var writer = new StreamWriter(PointDataFilePath);
+        var stringBuilder = new StringBuilder(xes.Length * 3);
         
         foreach (var x in xes)
         {
             double y = expression(x);
-            stringBuilder.Append(x);
-            stringBuilder.Append('\t');
-            stringBuilder.Append(y);
-            stringBuilder.AppendLine();
+            stringBuilder.Append(x).Append('\t').Append(y).AppendLine();
         }
-
         string correctData = stringBuilder.Replace(',', '.').ToString();
+
+        using var writer = new StreamWriter(PointDataFilePath);
         writer.Write(correctData);
     }
     
     public void PointDataToFile(double[,] knots)
     {
-        var stringBuilder = new StringBuilder();
-        using var writer = new StreamWriter(PointDataFilePath);
+        var stringBuilder = new StringBuilder(knots.Length * 3);
 
         int length = knots.GetLength(0);
         
@@ -81,13 +77,11 @@ public class GNUPlot : IDisposable
         {
             double x = knots[i, 0];
             double y = knots[i, 1];
-            stringBuilder.Append(x);
-            stringBuilder.Append('\t');
-            stringBuilder.Append(y);
-            stringBuilder.AppendLine();
+            stringBuilder.Append(x).Append('\t').Append(y).AppendLine();
         }
+        string correctData = stringBuilder.Replace(',', '.').ToString();
 
-        string correctData = stringBuilder.ToString().Replace(",", ".");
+        using var writer = new StreamWriter(PointDataFilePath);
         writer.Write(correctData);
     }
 
@@ -117,16 +111,11 @@ public class GNUPlot : IDisposable
 
     public void Stop()
     {
-        if (_gpSw is not null)
-        {
-            _gpSw.Dispose();
-            _gpSw = null;
-        }        
-        if (_gpProc is not null)
-        {
-            _gpProc.Dispose();
-            _gpProc = null;
-        }
+        _gpSw?.Dispose();
+        _gpSw = null;
+
+        _gpProc?.Dispose();
+        _gpProc = null;
     }
 
     public void Dispose()
