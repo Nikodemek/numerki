@@ -21,13 +21,13 @@ public class Interpolation
         Knots = knots;
     }
 
-    /*public double CalculateValue(double abscissa)
+    public double CalculateValue(double abscissa)
     {
         int length = Knots.GetLength(0);
 
         double t = (abscissa - Knots[0, 0]) / _diff;
         double value = 0;
-        
+
         for (var i = 0; i < length; i++)
         {
             double quotient = Knots[i, 1];
@@ -37,11 +37,11 @@ public class Interpolation
             }
             value += quotient;
         }
-        
-        return value;
-    }*/
 
-    public double CalculateValue(double abscissa)
+        return value;
+    }
+
+    /*public double CalculateValue(double abscissa)
     {
         int length = Knots.GetLength(0);
         double value = 0;
@@ -59,7 +59,7 @@ public class Interpolation
         }
 
         return value;
-    }
+    }*/
 
     private static double CalculateDiff(double min, double max, int knotsCount)
     {
