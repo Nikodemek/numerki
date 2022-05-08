@@ -10,7 +10,7 @@ class Program
 
     private static readonly Function[] Functions = {
         new(
-            Expr: x => x * x * x - 2 * x - 5,
+            Expr: x => (((x - 0) * x) - 2) * x - 5,
             ExprString: "x^3 - 2x - 5"
         ),
         new(
@@ -103,7 +103,7 @@ class Program
 
                 knots = fileManager.Read();
                 (rangeMin, rangeMax) = ArraysUtil.FindMinAndMaxAtColumn(knots, 0);
-                (rangeMin, rangeMax) = ArraysUtil.StrechRange(rangeMin, rangeMax, 0.3);
+                //(rangeMin, rangeMax) = ArraysUtil.StrechRange(rangeMin, rangeMax, 0.3);
                 interpolation = new Interpolation(knots);
                 break;
 
