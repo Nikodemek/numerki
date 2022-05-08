@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using Zadanie3.Utils;
@@ -9,8 +7,8 @@ namespace Zadanie3.Model;
 
 public class GNUPlot : IDisposable
 {
-    private static readonly string GnuplotPath = 
-        RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? 
+    private static readonly string GnuplotPath =
+        RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ?
         Path.Combine("/", "usr", "bin", "gnuplot") :
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "gnuplot", "bin", "gnuplot.exe");
     private static readonly string BaseDataDirPath = Path.Combine(Path.GetTempPath(), "metody_numeryczne_2022");
@@ -40,7 +38,7 @@ public class GNUPlot : IDisposable
     public void FuncDataToFile(Func<double, double> expression, double min, double max, bool funcSwitch, double step = 0.01)
     {
         var stringBuilder = new StringBuilder((int)((max - min) / step));
-            
+
         for (double x = min; x < max; x += step)
         {
             double y = expression(x);
@@ -55,7 +53,7 @@ public class GNUPlot : IDisposable
     public void PointDataToFile(Func<double, double> expression, params double[] xes)
     {
         var stringBuilder = new StringBuilder(xes.Length * 3);
-        
+
         foreach (var x in xes)
         {
             double y = expression(x);
@@ -66,13 +64,13 @@ public class GNUPlot : IDisposable
         using var writer = new StreamWriter(PointDataFilePath);
         writer.Write(correctData);
     }
-    
+
     public void PointDataToFile(double[,] knots)
     {
         var stringBuilder = new StringBuilder(knots.Length * 3);
 
         int length = knots.GetLength(0);
-        
+
         for (var i = 0; i < length; i++)
         {
             double x = knots[i, 0];
@@ -88,7 +86,7 @@ public class GNUPlot : IDisposable
     public void Start()
     {
         if (_gpProc is not null || _gpSw is not null) Stop();
-            
+
         _gpProc = new Process();
         var startInfo = _gpProc.StartInfo;
 
@@ -103,7 +101,7 @@ public class GNUPlot : IDisposable
         string ifOrigExist = File.Exists(OrigFunctionDataFilePath)
             ? $"plot '{OrigFunctionDataFilePath}' title \"F(x) - interpolowany\" w l, "
             : "plot ";
-        
+
         _gpSw.WriteLine(ifOrigExist +
               $"'{InterpolationFunctionDataFilePath}' title \"f(x) - interpolujacy\" w l, " +
               $"'{PointDataFilePath}' title \"Knots\" w p, ");

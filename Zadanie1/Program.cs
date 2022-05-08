@@ -41,7 +41,7 @@ public class Program
 
         MiniMenu(gnuplot);
         gnuplot.Start();
-        
+
         Console.ReadKey();
     }
 
@@ -91,7 +91,7 @@ public class Program
                 Console.Write($"Enter epsilon (default = {defEps}): ");
                 double epsilon = Util.ReadDouble(min: 0, def: defEps);
                 Console.WriteLine();
-                
+
                 bisectionRoot = RootFinders.FindBisection(expr, rangeMin, rangeMax, epsilon, out int bisectionIterations);
                 Util.LogResult(expr, exprString, bisectionRoot, epsilon, "Bisection", bisectionIterations);
                 newtonsRoot = RootFinders.FindNewtons(expr, deriv, rangeMin, rangeMax, epsilon, out int newtonsIterations);
@@ -114,7 +114,7 @@ public class Program
         }
 
         (rangeMin, rangeMax) = Util.FindBestRange(rangeMin, rangeMax, 0.2, bisectionRoot, newtonsRoot);
-        
+
         gnuplot.FuncDataToFile(expr, rangeMin, rangeMax);
         gnuplot.PointDataToFile(expr, bisectionRoot, newtonsRoot);
     }

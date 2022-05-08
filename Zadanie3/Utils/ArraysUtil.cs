@@ -11,10 +11,12 @@ public class ArraysUtil
 
         for (var i = 0; i < rowLength; i++)
         {
-            if( doublesList[i].Length != columnLength) throw new ArgumentException("List of arrays is not rectangular!", nameof(doublesList));
+            var arr = doublesList[i];
+            if (arr.Length != columnLength) throw new ArgumentException("List of arrays is not rectangular!", nameof(doublesList));
+
             for (int j = 0; j < columnLength; j++)
             {
-                newArray[i, j] = doublesList[i][j];
+                newArray[i, j] = arr[j];
             }
         }
 
@@ -24,16 +26,18 @@ public class ArraysUtil
     public static (double min, double max) FindMinAndMaxAtColumn(double[,] array, int columnNum)
     {
         int length = array.GetLength(0);
-        double min = array[0, columnNum];
-        double max = array[0, columnNum];
+        double value = array[0, columnNum];
+        double min = value;
+        double max = value;
         for (var i = 1; i < length; i++)
         {
-            if (array[i, columnNum] > max) max = array[i, columnNum];
-            if (array[i, columnNum] < min) min = array[i, columnNum];
+            value = array[i, columnNum];
+            if (value > max) max = value;
+            else if (value < min) min = value;
         }
         return (min, max);
     }
-    
+
     public static double CheckDiff(double[,] array, int columnNum)
     {
         int lengthMinOne = array.GetLength(0) - 1;

@@ -5,9 +5,9 @@ using Zadanie2.Utils;
 namespace Zadanie2;
 using ESC = GaussSolution.EquationsSystemClass;
 
-class Program 
+class Program
 {
-  
+
     public static void Main()
     {
         Global.EnsureDirectoryIsValid();

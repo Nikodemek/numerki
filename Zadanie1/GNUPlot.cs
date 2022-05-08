@@ -34,7 +34,7 @@ public class GNUPlot : IDisposable
     {
         var stringBuilder = new StringBuilder();
         using var writer = new StreamWriter(FunctionDataFilePath);
-            
+
         for (double x = min; x < max; x += step)
         {
             double y = expression(x);
@@ -52,7 +52,7 @@ public class GNUPlot : IDisposable
     {
         var stringBuilder = new StringBuilder();
         using var writer = new StreamWriter(PointDataFilePath);
-        
+
         foreach (var x in xes)
         {
             double y = expression(x);
@@ -69,7 +69,7 @@ public class GNUPlot : IDisposable
     public void Start()
     {
         if (_gpProc is not null || _gpSw is not null) Stop();
-            
+
         _gpProc = new Process();
         var startInfo = _gpProc.StartInfo;
 
@@ -92,7 +92,7 @@ public class GNUPlot : IDisposable
             _gpSw.Close();
             _gpSw.Dispose();
             _gpSw = null;
-        }        
+        }
         if (_gpProc is not null)
         {
             _gpProc.Close();

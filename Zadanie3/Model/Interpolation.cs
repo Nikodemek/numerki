@@ -78,7 +78,7 @@ public class Interpolation
             knots[i, 1] = func(argument);
             argument += diff;
         }
-        
+
         return knots;
     }
 }

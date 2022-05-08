@@ -82,7 +82,7 @@ public static class Util
     {
         double length = max - min;
         extend *= length;
-        
+
         foreach (var point in points)
         {
             bool isInside = point.Between(min, max);
@@ -91,7 +91,7 @@ public static class Util
                 if (point < min)
                 {
                     min = point - extend;
-                } 
+                }
                 else
                 {
                     max = point + extend;

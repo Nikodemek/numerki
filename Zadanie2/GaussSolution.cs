@@ -7,7 +7,7 @@ public class GaussSolution
     public static double[] Solve(double[,] matrix, out EquationsSystemClass equationsSystemClass)
     {
         var preparedMatrix = Arrayer.Copy(matrix);
-        
+
         MakeEchelon(preparedMatrix);
         GaussianElimination(preparedMatrix);
         equationsSystemClass = GetMatrixClass(preparedMatrix);

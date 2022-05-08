@@ -5,7 +5,8 @@ using Zadanie3.Utils;
 
 namespace Zadanie3;
 
-class Program {
+class Program
+{
 
     private static readonly Function[] Functions = {
         new(
@@ -32,9 +33,8 @@ class Program {
 
     public static void Main()
     {
-        Console.WriteLine(Path.GetTempPath());
         CreateDefaultFile();
-        
+
         using var gnuplot = new GNUPlot();
         MiniMenu(gnuplot);
         gnuplot.Start();
@@ -42,14 +42,14 @@ class Program {
         Console.ReadKey();
         gnuplot.Stop();
     }
-    
+
     private static void MiniMenu(GNUPlot gnuplot)
     {
         Interpolation interpolation;
         double rangeMin, rangeMax;
         FileManager fileManager;
         double[,] knots;
-        
+
         Console.WriteLine("What would you want to do?");
         Console.WriteLine("1. Choose between given function.");
         Console.WriteLine("2. Insert your own knots.");
@@ -84,17 +84,17 @@ class Program {
                 Console.Write($"max (default = {defMax}): ");
                 rangeMax = ConsolReader.ReadDouble(min: rangeMin, def: defMax);
                 Console.WriteLine();
-        
+
                 Console.WriteLine($"Enter knots number:");
                 Console.Write($"Input (default = {defKnots}): ");
                 var knotsCount = ConsolReader.ReadInt32(0, 100, defKnots);
                 Console.WriteLine();
 
                 interpolation = new Interpolation(expr, rangeMin, rangeMax, knotsCount);
-        
+
                 gnuplot.FuncDataToFile(expr, rangeMin, rangeMax, true);
                 break;
-            
+
             case 2:
                 Console.Write("Pass the filename (def = 'default'): ");
                 string filename = Console.ReadLine() ?? String.Empty;
@@ -109,7 +109,7 @@ class Program {
 
             default:
                 fileManager = new FileManager("default");
-                
+
                 knots = fileManager.Read();
                 (rangeMin, rangeMax) = ArraysUtil.FindMinAndMaxAtColumn(knots, 0);
                 interpolation = new Interpolation(knots);

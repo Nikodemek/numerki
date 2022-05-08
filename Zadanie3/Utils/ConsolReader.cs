@@ -49,7 +49,7 @@ public static class ConsolReader
             Console.WriteLine($"Wrong input! It is supposed to be a Double, ranging from {min} to {max}.");
         }
     }
-    
+
     public static bool Between(this double val, double min, double max)
     {
         return val >= min && val <= max;

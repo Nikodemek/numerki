@@ -1,8 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-
-namespace Zadanie3.Utils;
+﻿namespace Zadanie3.Utils;
 
 public static class DirectoryManager
 {

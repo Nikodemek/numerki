@@ -7,14 +7,14 @@ public class FileManager : IFileReader<double[,]>
 {
     private readonly string _fileName;
     private readonly string _filePath;
-    
+
     public FileManager(string fileName)
     {
         if (String.IsNullOrWhiteSpace(fileName)) throw new ArgumentException("FileName cannot be empty!", nameof(fileName));
 
         _fileName = fileName;
         _filePath = Path.Combine(Global.BaseDataDirPath, _fileName);
-        
+
         Global.EnsureDirectoryIsValid();
         if (!File.Exists(_filePath)) throw new FileNotFoundException("File not found!", _filePath);
 
