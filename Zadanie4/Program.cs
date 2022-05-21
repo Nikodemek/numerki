@@ -53,7 +53,7 @@ public class Program
         Console.WriteLine("For which function do you want to calculate the integral?");
         for (int i = 0; i < functionsLength; i++)
         {
-            Console.WriteLine($"{i + 1}. f(x) = {Functions[i].ExprString}");
+            Console.WriteLine($"{i + 1}. f(x) = {FunctionsPlus[i].ExprString}");
         }
         Console.Write($"Input (default = {defFunc}): ");
         int choice = ConsolReader.ReadInt32(min: 1, max: functionsLength, def: defFunc);
