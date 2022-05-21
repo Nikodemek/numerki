@@ -21,13 +21,13 @@ public class NewtonCotesQuadrature
             double diff = (b - a) / div;
 
             double evenElementSum = 0;
-            for (var i = 2; i < b; i += 2)
+            for (var i = 2; i < div; i += 2)
             {
                 evenElementSum += func(a + diff * i);
             }
 
             double oddElementSum = 0;
-            for (var i = 1; i < b; i += 2)
+            for (var i = 1; i < div; i += 2)
             {
                 oddElementSum += func(a + diff * i);
             }

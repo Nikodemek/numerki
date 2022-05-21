@@ -12,23 +12,38 @@ public class Program
             Expr: x => x * x + 3,
             ExprString: "x^2 + 3"
         ),
+        new(
+            Expr: x => 2 * x + 1,
+            ExprString: "2x + 1"
+        ),
+        new(
+            Expr: x => Math.Sin(x),
+            ExprString: "sin(x)"
+        ),
+    };
+    
+    private static readonly Function[] FunctionsPlus = {
+        new(
+            Expr: x => (2 * x + 1) / Math.Sqrt(1 - x * x),
+            ExprString: "2x + 1 / sqrt(1 - x^2)"
+        ),
+        new(
+            Expr: x => Math.Sin(x) / Math.Sqrt(1 - x * x),
+            ExprString: "sin(x) / sqrt(1 - x^2)"
+        ),
     };
     
     public static void Main(string[] args)
     {
 
         NewtonCotesQuadrature newtonCotesQuadrature 
-            = new NewtonCotesQuadrature(30);
+            = new NewtonCotesQuadrature(0.01);
 
-        double result = newtonCotesQuadrature.CalculateIntegralWithBorder(Functions[1].Expr);
+        double result = newtonCotesQuadrature.CalculateIntegralWithBorder(FunctionsPlus[1].Expr);
         Console.WriteLine(result);
-
-        newtonCotesQuadrature.Accuracy = 20;
-        result = newtonCotesQuadrature.CalculateIntegralWithBorder(Functions[1].Expr);
-        Console.WriteLine(result);
-
-        newtonCotesQuadrature.Accuracy = 100;
-        result = newtonCotesQuadrature.CalculateIntegralWithBorder(Functions[1].Expr);
+        
+        GaussQuadrature gaussQuadrature = new GaussQuadrature();
+        result = gaussQuadrature.CalculateIntegral(Functions[3].Expr, 5);
         Console.WriteLine(result);
     }
 }
