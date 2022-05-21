@@ -8,7 +8,7 @@ public class NewtonCotesQuadrature
         Accuracy = accuracy;
     }
 
-    public double CalculateIntegral(Func<double, double> func, double a, double b)
+    private double CalculateIntegral(Func<double, double> func, double a, double b)
     {
         if (a > b)
             throw new ArgumentException("Beginning of interval must be a number greater than the end limit");
@@ -38,6 +38,35 @@ public class NewtonCotesQuadrature
             result = currentResult;
             div += 1;
         } while (comparison > Accuracy);
+
+        return result;
+    }
+
+    public double CalculateIntegralWithBorder(Func<double, double> func)
+    {
+        double result = 0;
+        
+        double beginning = 0;
+        double end = 0.5;
+        double integralResult;
+       
+        do
+        {
+            integralResult = CalculateIntegral(func, beginning, end);
+            result += integralResult;
+            beginning = end;
+            end += (1 - end) * 0.5;
+        } while (Math.Abs(integralResult) > Accuracy);
+        
+        beginning = -0.5;
+        end = 0;
+        do
+        {
+            integralResult = CalculateIntegral(func, beginning, end);
+            result += integralResult;
+            end = beginning;
+            beginning -= (1 - Math.Abs(beginning)) * 0.5;
+        } while (Math.Abs(integralResult) > Accuracy);
 
         return result;
     }

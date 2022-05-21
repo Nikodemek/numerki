@@ -20,15 +20,15 @@ public class Program
         NewtonCotesQuadrature newtonCotesQuadrature 
             = new NewtonCotesQuadrature(30);
 
-        double result = newtonCotesQuadrature.CalculateIntegral(Functions[1].Expr, 0, 4);
+        double result = newtonCotesQuadrature.CalculateIntegralWithBorder(Functions[1].Expr);
         Console.WriteLine(result);
 
         newtonCotesQuadrature.Accuracy = 20;
-        result = newtonCotesQuadrature.CalculateIntegral(Functions[1].Expr, 0, 4);
+        result = newtonCotesQuadrature.CalculateIntegralWithBorder(Functions[1].Expr);
         Console.WriteLine(result);
 
         newtonCotesQuadrature.Accuracy = 100;
-        result = newtonCotesQuadrature.CalculateIntegral(Functions[1].Expr, 0, 4);
+        result = newtonCotesQuadrature.CalculateIntegralWithBorder(Functions[1].Expr);
         Console.WriteLine(result);
     }
 }
