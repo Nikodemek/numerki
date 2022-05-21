@@ -59,7 +59,7 @@ public class Program
         int choice = ConsolReader.ReadInt32(min: 1, max: functionsLength, def: defFunc);
         Console.WriteLine();
         
-        var (expr, _) = Functions[choice - 1];
+        var (expr, _) = FunctionsPlus[choice - 1];
         double result;
         
         Console.WriteLine("Choose quadrature:");
