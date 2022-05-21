@@ -59,10 +59,31 @@ public class Program
         int choice = ConsolReader.ReadInt32(min: 1, max: functionsLength, def: defFunc);
         Console.WriteLine();
         
-        var (expr, _) = FunctionsPlus[choice - 1];
+        var (expr, _) = Functions[choice - 1];
+        var (exprPlus, _) = FunctionsPlus[choice - 1];
+
         double result;
         
-        Console.WriteLine("Choose quadrature:");
+        Console.Write("Pass accuracy for Newton-Cotes method (def = 0.01): ");
+        double accuracy = ConsolReader.ReadDouble(0, def: 0.01);
+        Console.WriteLine();
+        NewtonCotesQuadrature newtonCotesQuadrature = new NewtonCotesQuadrature(accuracy);
+        result = newtonCotesQuadrature.CalculateIntegralWithBorder(exprPlus);
+        Console.WriteLine("Newton-Cotes");
+        Console.Write("Indefinite integral in range <-1, 1>: ");
+        Console.WriteLine(result);
+        GaussQuadrature gaussQuadrature = new GaussQuadrature();
+        Console.WriteLine();
+
+        Console.WriteLine("Gauss-Chebyshev");
+        for (var i = 2; i <= 5; i++)
+        {
+            result = gaussQuadrature.CalculateIntegral(expr, i);
+            Console.Write($"Indefinite integral in range <-1, 1> ({i} knots): ");
+            Console.WriteLine(result);
+        }
+
+        /*Console.WriteLine("Choose quadrature:");
         Console.WriteLine("1. Newton-Cortes");
         Console.WriteLine("2. Gauss-Chebyshev");
         Console.Write("Input (def = 1): ");
@@ -73,7 +94,7 @@ public class Program
                 Console.Write("Pass accuracy (def = 0.01): ");
                 double accuracy = ConsolReader.ReadDouble(0, def: 0.01);
                 NewtonCotesQuadrature newtonCotesQuadrature = new NewtonCotesQuadrature(accuracy);
-                result = newtonCotesQuadrature.CalculateIntegralWithBorder(expr);
+                result = newtonCotesQuadrature.CalculateIntegralWithBorder(exprPlus);
                 Console.Write("Indefinite integral in range <-1, 1>: ");
                 Console.WriteLine(result);
                 break;
@@ -86,6 +107,6 @@ public class Program
                     Console.WriteLine(result);
                 }
                 break;
-        }
+        }*/
     }
 }
