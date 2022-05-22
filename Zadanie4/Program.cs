@@ -1,8 +1,7 @@
-﻿using Microsoft.VisualBasic.CompilerServices;
+﻿using Zadanie4.Model;
+using Zadanie4.Utils;
 
 namespace Zadanie4;
-using Model;
-using Utils;
 
 public class Program
 {
@@ -24,7 +23,6 @@ public class Program
             ExprString: "sin(x)"
         ),
     };
-    
     private static readonly Function[] FunctionsPlus = {
         new(
             Expr: x => (((x - 0) * x - 2) * x - 5) / Math.Sqrt(1 - x * x),
@@ -44,7 +42,7 @@ public class Program
         ),
     };
     
-    public static void Main(string[] args)
+    public static void Main()
     {
         var rand = new Random();
         int functionsLength = Functions.Length;
@@ -53,32 +51,30 @@ public class Program
         Console.WriteLine("For which function do you want to calculate the integral?");
         for (int i = 0; i < functionsLength; i++)
         {
-            Console.WriteLine($"{i + 1}. f(x) = {FunctionsPlus[i].ExprString}");
+            Console.WriteLine($"{i + 1}. f(x) = {Functions[i].ExprString}");
         }
         Console.Write($"Input (default = {defFunc}): ");
         int choice = ConsolReader.ReadInt32(min: 1, max: functionsLength, def: defFunc);
         Console.WriteLine();
         
-        var (expr, _) = Functions[choice - 1];
-        var (exprPlus, _) = FunctionsPlus[choice - 1];
+        var expr = Functions[choice - 1].Expr;
+        var exprPlus = FunctionsPlus[choice - 1].Expr;
 
         double result;
         
         Console.Write("Pass accuracy for Newton-Cotes method (def = 0.01): ");
         double accuracy = ConsolReader.ReadDouble(0, def: 0.01);
         Console.WriteLine();
-        NewtonCotesQuadrature newtonCotesQuadrature = new NewtonCotesQuadrature(accuracy);
-        result = newtonCotesQuadrature.CalculateIntegralWithBorder(exprPlus);
+        result = NewtonCotesQuadrature.CalculateIntegralWithBorder(exprPlus, accuracy);
         Console.WriteLine("Newton-Cotes");
         Console.Write("Indefinite integral in range <-1, 1>: ");
         Console.WriteLine(result);
-        GaussQuadrature gaussQuadrature = new GaussQuadrature();
         Console.WriteLine();
 
         Console.WriteLine("Gauss-Chebyshev");
         for (var i = 2; i <= 5; i++)
         {
-            result = gaussQuadrature.CalculateIntegral(expr, i);
+            result = GaussQuadrature.CalculateIntegral(expr, i);
             Console.Write($"Indefinite integral in range <-1, 1> ({i} knots): ");
             Console.WriteLine(result);
         }
@@ -108,5 +104,7 @@ public class Program
                 }
                 break;
         }*/
+
+        Console.ReadLine();
     }
 }
