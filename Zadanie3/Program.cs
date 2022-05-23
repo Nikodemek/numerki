@@ -29,6 +29,10 @@ class Program
             Expr: x => Math.Abs(x),
             ExprString: "|x|"
         ),
+        new(
+            Expr: x => Math.Abs(x + 0.6),
+            ExprString: "|x + 0.6|"
+        ),
     };
 
     public static void Main()
