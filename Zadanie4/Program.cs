@@ -27,28 +27,6 @@ public class Program
             ExprString: "x^3"
         ),
     };
-    private static readonly Function[] FunctionsPlus = {
-        new(
-            Expr: x => (((x - 0) * x - 2) * x - 5) / Math.Sqrt(1 - x * x),
-            ExprString: "(x^3 - 2x - 5) / sqrt(1 - x^2)"
-        ),
-        new(
-            Expr: x => (x * x + 3) / Math.Sqrt(1 - x * x),
-            ExprString: "(x^2 + 3) / sqrt(1 - x^2)"
-        ),
-        new(
-            Expr: x => (2 * x + 1) / Math.Sqrt(1 - x * x),
-            ExprString: "(2x + 1) / sqrt(1 - x^2)"
-        ),
-        new(
-            Expr: x => Math.Sin(x) / Math.Sqrt(1 - x * x),
-            ExprString: "sin(x) / sqrt(1 - x^2)"
-        ),
-        new(
-            Expr: x => x * x * x / Math.Sqrt(1 - x * x),
-            ExprString: "x^3 / sqrt(1 - x^2)"
-        ),
-    };
     
     public static void Main()
     {
@@ -64,9 +42,9 @@ public class Program
         Console.Write($"Input (default = {defFunc}): ");
         int choice = ConsolReader.ReadInt32(min: 1, max: functionsLength, def: defFunc);
         Console.WriteLine();
-        
-        var expr = Functions[choice - 1].Expr;
-        var exprPlus = FunctionsPlus[choice - 1].Expr;
+
+        Func<double, double> expr = Functions[choice - 1].Expr;
+        Func<double, double> exprPlus = x => expr(x) / Math.Sqrt(1 - x * x);
 
         double result;
         
