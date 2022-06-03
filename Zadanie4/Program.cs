@@ -22,6 +22,10 @@ public class Program
             Expr: x => Math.Sin(x),
             ExprString: "sin(x)"
         ),
+        new(
+            Expr: x => x * x * x,
+            ExprString: "x^3"
+        ),
     };
     private static readonly Function[] FunctionsPlus = {
         new(
@@ -39,6 +43,10 @@ public class Program
         new(
             Expr: x => Math.Sin(x) / Math.Sqrt(1 - x * x),
             ExprString: "sin(x) / sqrt(1 - x^2)"
+        ),
+        new(
+            Expr: x => x * x * x / Math.Sqrt(1 - x * x),
+            ExprString: "x^3 / sqrt(1 - x^2)"
         ),
     };
     
@@ -69,6 +77,10 @@ public class Program
         Console.WriteLine("Newton-Cotes");
         Console.Write("Indefinite integral in range <-1, 1>: ");
         Console.WriteLine(result);
+        const double min = -1.0;
+        const double max = 1.0;
+        double limitedIntegral = NewtonCotesQuadrature.CalculateIntegral(expr, min, max, accuracy);
+        Console.WriteLine($"Newton-Cotes in range <{min}, {max}>: {limitedIntegral}");
         Console.WriteLine();
 
         Console.WriteLine("Gauss-Chebyshev");

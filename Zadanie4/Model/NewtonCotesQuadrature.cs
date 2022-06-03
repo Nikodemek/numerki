@@ -30,7 +30,7 @@ public static class NewtonCotesQuadrature
         return result;
     }
 
-    private static double CalculateIntegral(Func<double, double> func, double a, double b, double accuracy)
+    public static double CalculateIntegral(Func<double, double> func, double a, double b, double accuracy)
     {
         if (a > b) throw new ArgumentException("Beginning of interval must be a number greater than the end limit");
 
@@ -52,8 +52,8 @@ public static class NewtonCotesQuadrature
             {
                 oddElementSum += func(a + diff * i);
             }
-
-            double currentResult = diff / 3.0 * (func(a) + func(b) + 4 * oddElementSum + 2 * evenElementSum);
+            
+            double currentResult = diff / 3.0 * (func(a) + func(b) + 4.0 * oddElementSum + 2.0 * evenElementSum);
             comparison = Math.Abs(currentResult - result);
 
             result = currentResult;
