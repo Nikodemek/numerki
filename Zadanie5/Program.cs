@@ -1,13 +1,10 @@
-﻿using System;
-using System.Reflection;
-using Zadanie5.Dao;
+﻿using Zadanie5.Dao;
 using Zadanie5.Model;
-using Zadanie5.Model.Polynomials;
 using Zadanie5.Util;
 
 namespace Zadanie5;
 
-public class Program
+public static class Program
 {
     private static readonly Function[] Functions = {
         new(
