@@ -101,11 +101,11 @@ public class GNUPlot : IDisposable
         _gpSw = _gpProc.StandardInput;
 
         string ifOrigExist = File.Exists(OrigFunctionDataFilePath)
-            ? $"plot '{OrigFunctionDataFilePath}' title \"F(x) - interpolowany\" w l, "
+            ? $"plot '{OrigFunctionDataFilePath}' title \"F(x) - aproksymowany\" w l, "
             : "plot ";
 
         _gpSw.WriteLine(ifOrigExist +
-              $"'{InterpolationFunctionDataFilePath}' title \"f(x) - interpolujacy\" w l, " +
+              $"'{InterpolationFunctionDataFilePath}' title \"f(x) - aproksymacyjny\" w l, " +
               $"'{PointDataFilePath}' title \"Knots\" w p, ");
     }
 
