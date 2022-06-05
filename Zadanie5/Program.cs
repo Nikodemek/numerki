@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Reflection;
+using Zadanie5.Dao;
 using Zadanie5.Model;
+using Zadanie5.Model.Polynomials;
 using Zadanie5.Util;
 
 namespace Zadanie5;
@@ -46,41 +49,61 @@ public class Program
 
     public static void Main()
     {
-        double x = ChebyshevsPolynomials.Get(3, 2);
-        x = ChebyshevsPolynomials.Get(2, 3);
-        Console.WriteLine(x);
-
         int funcNo = 2;
-        double rangeMin;
-        double rangeMax;
-        int degree;
+        double rangeMin = -1;
+        double rangeMax = 1;
+        int degree, integralKnots;
+        GNUPlot gnuPlot = new GNUPlot();
 
-        Console.WriteLine("For which function do you want to calculate the interpolation?");
+        Console.WriteLine("For which function do you want to calculate the approximation?");
         int funcsLenght = Functions.Length;
         for (int i = 0; i < funcsLenght; i++)
         {
             Console.WriteLine($"{i + 1}. f(x) = {Functions[i].ExprString}");
         }
         Console.Write($"Function (default = {funcNo}): ");
-        funcNo = Utils.ReadInt32(min: 1, max: funcsLenght, def: funcNo) - 1;
+        funcNo = Utils.ReadInt32(min: 1, max: funcsLenght, def: funcNo);
         Console.WriteLine();
         
         Function function = Functions[funcNo - 1];
 
-        rangeMin = function.RangeMin;
+        /*rangeMin = function.RangeMin;
         Console.Write($"RangeMin (default = {rangeMin}): ");
         rangeMin = Utils.ReadDouble(def: rangeMin);
         
         rangeMax = function.RangeMax;
         Console.Write($"RangeMin (default = {rangeMax}): ");
-        rangeMax = Utils.ReadDouble(def: rangeMax);
+        rangeMax = Utils.ReadDouble(def: rangeMax);*/
         
         degree = function.Degree;
-        Console.Write($"RangeMin (default = {degree}): ");
+        Console.Write($"Degree (default = {degree}): ");
         degree = Utils.ReadInt32(def: degree);
 
-        
+        integralKnots = 3;
+        Console.Write($"Integral Knots (default = {integralKnots}): ");
+        integralKnots = Utils.ReadInt32(def: integralKnots);
 
+        Console.WriteLine();
+        
+        Approximation approximation = new Approximation(function.Expr, degree, integralKnots);
+
+        double error = approximation.CalculateError(20);
+        Console.WriteLine($"Approximation error: {error}");
+
+        gnuPlot.FuncDataToFile(
+            function.Expr,
+            rangeMin,
+            rangeMax,
+            true);
+        
+        gnuPlot.FuncDataToFile(
+            x => approximation.CalculateValue(x),
+            rangeMin,
+            rangeMax,
+            false);
+        
+        gnuPlot.Start();
+        
         Console.ReadLine();
     }
 }
