@@ -50,7 +50,7 @@ public static class Program
         double rangeMin = -1;
         double rangeMax = 1;
         int degree, integralKnots;
-        GNUPlot gnuPlot = new GNUPlot();
+        using var gnuPlot = new GNUPlot();
 
         Console.WriteLine("For which function do you want to calculate the approximation?");
         int funcsLenght = Functions.Length;
@@ -82,7 +82,7 @@ public static class Program
 
         Console.WriteLine();
         
-        Approximation approximation = new Approximation(function.Expr, degree, integralKnots);
+        var approximation = new Approximation(function.Expr, degree, integralKnots);
 
         double error = approximation.CalculateError(20);
         Console.WriteLine($"Approximation error: {error}");
@@ -94,7 +94,7 @@ public static class Program
             true);
         
         gnuPlot.FuncDataToFile(
-            x => approximation.CalculateValue(x),
+            approximation.CalculateValue,
             rangeMin,
             rangeMax,
             false);
