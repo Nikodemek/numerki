@@ -20,7 +20,6 @@ public class GNUPlot : IDisposable
     private readonly string DataDirPath;
     private readonly string OrigFunctionDataFilePath;
     private readonly string InterpolationFunctionDataFilePath;
-    private readonly string PointDataFilePath;
 
     private StreamWriter? _gpSw;
     private Process? _gpProc;
@@ -30,7 +29,6 @@ public class GNUPlot : IDisposable
         DataDirPath = Path.Combine(BaseDataDirPath, $"assets-({_instances})");
         OrigFunctionDataFilePath = Path.Combine(DataDirPath, "orig_function_data.dat");
         InterpolationFunctionDataFilePath = Path.Combine(DataDirPath, "interpolation_function_data.dat");
-        PointDataFilePath = Path.Combine(DataDirPath, "points_data.dat");
         
         Utils.CreateDirectory(DataDirPath);
 
@@ -50,39 +48,6 @@ public class GNUPlot : IDisposable
 
         using var writer = new StreamWriter(funcSwitch ? OrigFunctionDataFilePath : InterpolationFunctionDataFilePath);
         writer.WriteLine(correctData);
-    }
-
-    public void PointDataToFile(Func<double, double> expression, params double[] xes)
-    {
-        var stringBuilder = new StringBuilder(xes.Length * 3);
-
-        foreach (var x in xes)
-        {
-            double y = expression(x);
-            stringBuilder.Append(x).Append('\t').Append(y).AppendLine();
-        }
-        string correctData = stringBuilder.Replace(',', '.').ToString();
-
-        using var writer = new StreamWriter(PointDataFilePath);
-        writer.Write(correctData);
-    }
-
-    public void PointDataToFile(double[,] knots)
-    {
-        var stringBuilder = new StringBuilder(knots.Length * 3);
-
-        int length = knots.GetLength(0);
-
-        for (var i = 0; i < length; i++)
-        {
-            double x = knots[i, 0];
-            double y = knots[i, 1];
-            stringBuilder.Append(x).Append('\t').Append(y).AppendLine();
-        }
-        string correctData = stringBuilder.Replace(',', '.').ToString();
-
-        using var writer = new StreamWriter(PointDataFilePath);
-        writer.Write(correctData);
     }
 
     public void Start()
@@ -105,8 +70,7 @@ public class GNUPlot : IDisposable
             : "plot ";
 
         _gpSw.WriteLine(ifOrigExist +
-              $"'{InterpolationFunctionDataFilePath}' title \"f(x) - aproksymacyjny\" w l, " +
-              $"'{PointDataFilePath}' title \"Knots\" w p, ");
+              $"'{InterpolationFunctionDataFilePath}' title \"f(x) - aproksymacyjny\" w l");
     }
 
     public void Stop()
